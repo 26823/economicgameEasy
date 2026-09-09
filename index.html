@@ -1,0 +1,2936 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🌍 Wereldsimulator</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#17232e;
+    color:white;
+}
+
+#top{
+    position:fixed;
+    z-index:1000;
+    left:0;
+    right:0;
+    top:0;
+    height:60px;
+    background:#17232e;
+    border-bottom:2px solid #506270;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px;
+}
+
+#top b{
+    white-space:nowrap;
+}
+
+#money{
+    margin-left:auto;
+    font-size:19px;
+    font-weight:bold;
+}
+
+button{
+    border:1px solid #687d8c;
+    background:#2c414f;
+    color:white;
+    padding:8px 11px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#415968;
+}
+
+#map{
+    position:fixed;
+    left:0;
+    top:60px;
+    right:0;
+    bottom:0;
+    overflow:hidden;
+    background:#69ad4d;
+}
+
+#world{
+    position:absolute;
+    width:6000px;
+    height:6000px;
+    transform-origin:0 0;
+}
+
+.grass{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:
+    repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,.035) 0px,
+        rgba(255,255,255,.035) 2px,
+        transparent 2px,
+        transparent 45px
+    ),
+    #69ad4d;
+}
+
+.water{
+    position:absolute;
+    background:#3d99d0;
+    border:3px solid rgba(255,255,255,.2);
+    border-radius:30px;
+}
+
+.road{
+    position:absolute;
+    background:#777;
+}
+
+.roadLine{
+    position:absolute;
+    background:#ead95b;
+}
+
+.tree{
+    position:absolute;
+    font-size:32px;
+    z-index:3;
+    pointer-events:none;
+}
+
+.houseWorld{
+    position:absolute;
+    font-size:30px;
+    z-index:4;
+    pointer-events:none;
+}
+
+.person{
+    position:absolute;
+    font-size:23px;
+    z-index:20;
+    pointer-events:none;
+}
+
+.customer{
+    position:absolute;
+    font-size:25px;
+    z-index:25;
+    pointer-events:none;
+}
+
+.building{
+    position:absolute;
+    z-index:15;
+    text-align:center;
+    font-size:55px;
+    filter:drop-shadow(2px 3px 2px rgba(0,0,0,.5));
+    pointer-events:none;
+}
+
+.building span{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    background:rgba(0,0,0,.65);
+    border-radius:5px;
+    padding:3px 6px;
+    white-space:nowrap;
+}
+
+#panel{
+    position:fixed;
+    z-index:900;
+    right:10px;
+    top:70px;
+    width:365px;
+    max-height:calc(100vh - 80px);
+    overflow-y:auto;
+    background:rgba(18,28,37,.97);
+    border:1px solid #637786;
+    border-radius:10px;
+    padding:12px;
+}
+
+.box{
+    background:#22343f;
+    padding:10px;
+    margin-bottom:9px;
+    border-radius:7px;
+}
+
+.box h2{
+    margin:0 0 8px;
+    font-size:17px;
+}
+
+.big{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.buildBtn{
+    width:100%;
+    margin-top:5px;
+    text-align:left;
+}
+
+.selected{
+    border:2px solid #ffe066;
+}
+
+.product{
+    background:#172832;
+    border-radius:6px;
+    padding:8px;
+    margin:5px 0;
+}
+
+.product-name{
+    font-weight:bold;
+}
+
+.product-price{
+    float:right;
+    font-weight:bold;
+}
+
+.bar{
+    height:10px;
+    background:#111a20;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:5px;
+}
+
+.bar div{
+    height:100%;
+    width:0;
+    background:#4fa7ed;
+    transition:width .3s;
+}
+
+#message{
+    position:fixed;
+    z-index:950;
+    top:75px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#17232e;
+    border:1px solid #728594;
+    border-radius:8px;
+    padding:10px 18px;
+    display:none;
+}
+
+#log{
+    max-height:190px;
+    overflow-y:auto;
+    font-size:13px;
+}
+
+#log div{
+    margin-bottom:5px;
+}
+
+#zoom{
+    position:fixed;
+    z-index:950;
+    bottom:10px;
+    left:10px;
+    background:rgba(0,0,0,.65);
+    padding:7px 10px;
+    border-radius:6px;
+}
+
+input[type=range]{
+    width:100%;
+}
+
+#choice{
+    position:fixed;
+    z-index:3000;
+    display:none;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:470px;
+    max-width:90%;
+    background:#17232e;
+    border:2px solid #718493;
+    border-radius:13px;
+    padding:22px;
+    box-shadow:0 20px 80px #000;
+}
+
+.choice{
+    display:block;
+    width:100%;
+    margin-top:8px;
+    text-align:left;
+}
+
+.taxGood{
+    color:#8ee28e;
+}
+
+.taxBad{
+    color:#ff9c9c;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="top">
+
+<b>🌍 Wereldsimulator</b>
+
+<button onclick="pauseGame()" id="pause">
+⏸️ Pauze
+</button>
+
+<button onclick="changeSpeed(-1)">🐢</button>
+<button onclick="changeSpeed(1)">🐇</button>
+
+<button onclick="zoom(-0.1)">➖</button>
+<button onclick="zoom(0.1)">➕</button>
+
+<button onclick="saveGame()">💾</button>
+<button onclick="loadGame()">📂</button>
+
+<div id="money">💰 €500</div>
+
+</div>
+
+
+<div id="map">
+
+<div id="world">
+
+<div class="grass"></div>
+
+<div class="water" style="left:800px;top:300px;width:1000px;height:550px">
+</div>
+
+<div class="water" style="left:3500px;top:2800px;width:1000px;height:650px">
+</div>
+
+<div class="road" style="left:0;top:1100px;width:6000px;height:100px">
+</div>
+
+<div class="road" style="left:2500px;top:0;width:100px;height:6000px">
+</div>
+
+<div class="roadLine" style="left:0;top:1147px;width:6000px;height:6px">
+</div>
+
+<div class="roadLine" style="left:2547px;top:0;width:6px;height:6000px">
+</div>
+
+<div id="objects"></div>
+
+</div>
+</div>
+
+
+<div id="message">
+🏗️ Klik op de kaart om te bouwen
+</div>
+
+
+<div id="panel">
+
+<div class="box">
+
+<h2>🏢 Mijn bedrijf</h2>
+
+💰 Geld
+<div class="big">
+€<span id="companyMoney">500</span>
+</div>
+
+<br>
+
+🏢 Niveau: <b id="level">0</b>
+
+<br>
+
+<span id="levelName">
+Nog geen bedrijf
+</span>
+
+</div>
+
+
+<div class="box">
+
+<h2>📊 Economie</h2>
+
+👥 Klanten: <b id="customers">0</b>
+
+<br><br>
+
+📈 Vraag: <b id="demand">0</b>%
+
+<div class="bar">
+<div id="demandBar"></div>
+</div>
+
+<br>
+
+💵 Verkoopprijs: €<b id="price">5.00</b>
+
+<br><br>
+
+🏭 Inkoopprijs: €<b id="buyPrice">3.25</b>
+
+<br><br>
+
+💰 Winst per product: €<b id="profit">1.75</b>
+
+<br><br>
+
+📦 Voorraad: <b id="stock">0</b> / <b id="capacity">30</b>
+
+<br><br>
+
+📈 Inflatie: <b id="inflation">0</b>%
+
+<br><br>
+
+🧾 Belastingtarief: <b id="taxRate">0</b>%
+
+<br>
+
+💸 Belasting per 2 dagen: €<b id="taxPreview">0.00</b>
+
+</div>
+
+
+<div class="box">
+
+<h2>🏗️ Gebouwen</h2>
+
+<button class="buildBtn" id="b1" onclick="selectBuilding(1)">
+🛖 Kraampje — GRATIS
+</button>
+
+<button class="buildBtn" id="b2" onclick="selectBuilding(2)">
+🏪 Kleine winkel — €250
+</button>
+
+<button class="buildBtn" id="b3" onclick="selectBuilding(3)">
+🏬 Supermarkt — €1.000
+</button>
+
+<button class="buildBtn" id="b4" onclick="selectBuilding(4)">
+🏢 Kantoor — €5.000
+</button>
+
+<button class="buildBtn" id="b5" onclick="selectBuilding(5)">
+🏭 Fabriek — €20.000
+</button>
+
+<button class="buildBtn" id="b6" onclick="selectBuilding(6)">
+🚗 Autofabriek — €75.000
+</button>
+
+<button class="buildBtn" id="b7" onclick="selectBuilding(7)">
+🏗️ Grote fabriek — €250.000
+</button>
+
+<button class="buildBtn" id="b8" onclick="selectBuilding(8)">
+🏙️ Bedrijfscentrum — €1.000.000
+</button>
+
+<button class="buildBtn" id="b9" onclick="selectBuilding(9)">
+🏢 Hoofdkantoor — €5.000.000
+</button>
+
+<button class="buildBtn" id="b10" onclick="selectBuilding(10)">
+🌆 Megabedrijf — €25.000.000
+</button>
+
+</div>
+
+
+<div class="box">
+
+<h2>📦 Producten</h2>
+
+<div id="productPrices"></div>
+
+<button onclick="buyProducts(10)">
+🛒 Koop 10
+</button>
+
+<button onclick="buyProducts(50)">
+📦 Koop 50
+</button>
+
+<button onclick="buyProducts(100)">
+🚚 Koop 100
+</button>
+
+<br><br>
+
+<button onclick="upgradeStorage()">
+📦 Opslag +50 — €500
+</button>
+
+</div>
+
+
+<div class="box">
+
+<h2>💵 Verkoopprijs</h2>
+
+<input type="range"
+id="priceSlider"
+min="0.50"
+max="500"
+step="0.50"
+value="5"
+oninput="changePrice()">
+
+<br>
+
+€<b id="sliderPrice">5.00</b>
+
+</div>
+
+
+<div class="box">
+
+<button onclick="advertise()">
+📢 Reclame — €500
+</button>
+
+<button onclick="upgradeQuality()">
+⭐ Kwaliteit — €1.000
+</button>
+
+</div>
+
+
+<div class="box">
+
+<h2>🧾 Belastingen</h2>
+
+<p>
+De belasting is progressief: hoe meer geld je hebt, hoe hoger het percentage.
+</p>
+
+<div id="taxInfo"></div>
+
+</div>
+
+
+<div class="box">
+
+<h2>🌍 Wereld</h2>
+
+📅 Dag: <b id="day">1</b>
+
+<br><br>
+
+👥 Bevolking: <b id="population">80</b>
+
+<br><br>
+
+⏰ Tijd: <b id="time">08:00</b>
+
+<br><br>
+
+⚡ Snelheid: <b id="speed">1x</b>
+
+</div>
+
+
+<div class="box">
+
+<h2>📰 Nieuws</h2>
+
+<div id="log"></div>
+
+</div>
+
+</div>
+
+
+<div id="zoom">
+
+🔍 Zoom: <span id="zoomText">60%</span>
+
+<br>
+
+🖱️ Muiswiel = zoomen
+
+</div>
+
+
+<div id="choice">
+
+<h2 id="choiceTitle">
+🏭 Producent
+</h2>
+
+<p id="choiceText"></p>
+
+<button class="choice" id="choice0" onclick="choose(0)">
+</button>
+
+<button class="choice" id="choice1" onclick="choose(1)">
+</button>
+
+<button class="choice" id="choice2" onclick="choose(2)">
+</button>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+GEBOUWEN
+===================================================== */
+
+const buildings={
+
+1:{
+name:"Kraampje",
+emoji:"🛖",
+cost:0,
+capacity:2,
+price:5
+},
+
+2:{
+name:"Kleine winkel",
+emoji:"🏪",
+cost:250,
+capacity:8,
+price:10
+},
+
+3:{
+name:"Supermarkt",
+emoji:"🏬",
+cost:1000,
+capacity:25,
+price:18
+},
+
+4:{
+name:"Kantoor",
+emoji:"🏢",
+cost:5000,
+capacity:50,
+price:30
+},
+
+5:{
+name:"Fabriek",
+emoji:"🏭",
+cost:20000,
+capacity:100,
+price:45
+},
+
+6:{
+name:"Autofabriek",
+emoji:"🚗",
+cost:75000,
+capacity:180,
+price:75
+},
+
+7:{
+name:"Grote fabriek",
+emoji:"🏗️",
+cost:250000,
+capacity:350,
+price:120
+},
+
+8:{
+name:"Bedrijfscentrum",
+emoji:"🏙️",
+cost:1000000,
+capacity:700,
+price:200
+},
+
+9:{
+name:"Hoofdkantoor",
+emoji:"🏢",
+cost:5000000,
+capacity:1500,
+price:350
+},
+
+10:{
+name:"Megabedrijf",
+emoji:"🌆",
+cost:25000000,
+capacity:4000,
+price:600
+}
+
+};
+
+
+/* =====================================================
+BASIS
+===================================================== */
+
+const BASE_PRODUCT_PRICE=3.25;
+
+let money=500;
+let level=0;
+let building=null;
+let selected=null;
+
+let people=[];
+let customers=[];
+
+let population=80;
+let nextPerson=0;
+
+let price=5;
+
+let stock=0;
+let stockCapacity=30;
+
+let demand=0;
+let demandModifier=0;
+
+let quality=30;
+let advertising=0;
+let reputation=50;
+
+let inflation=0;
+
+let supplierFactor=1;
+let buyPrice=BASE_PRODUCT_PRICE;
+
+let day=1;
+let hour=8;
+
+let paused=false;
+
+let gameSpeed=1;
+let zoomLevel=.6;
+
+let choices=null;
+
+let totalSalesToday=0;
+let dailyTax=0;
+
+
+/* =====================================================
+WERELD
+===================================================== */
+
+const objects=document.getElementById("objects");
+
+
+function addObject(
+className,
+emoji,
+x,
+y
+){
+
+const el=document.createElement("div");
+
+el.className=className;
+
+el.textContent=emoji;
+
+el.style.left=x+"px";
+
+el.style.top=y+"px";
+
+objects.appendChild(el);
+
+return el;
+
+}
+
+
+function createWorld(){
+
+for(
+let i=0;
+i<170;
+i++
+){
+
+const x=100+Math.random()*5700;
+
+const y=100+Math.random()*5700;
+
+addObject(
+"houseWorld",
+Math.random()<.5?"🏠":"🏡",
+x,
+y
+);
+
+}
+
+
+for(
+let i=0;
+i<300;
+i++
+){
+
+const x=50+Math.random()*5800;
+
+const y=50+Math.random()*5800;
+
+addObject(
+"tree",
+"🌳",
+x,
+y
+);
+
+}
+
+
+for(
+let i=0;
+i<population;
+i++
+){
+
+createPerson();
+
+}
+
+}
+
+
+/* =====================================================
+MENSEN
+===================================================== */
+
+function createPerson(){
+
+const p={
+
+id:nextPerson++,
+
+x:100+Math.random()*5700,
+
+y:100+Math.random()*5700,
+
+targetX:0,
+
+targetY:0,
+
+element:null
+
+};
+
+
+p.targetX=p.x;
+
+p.targetY=p.y;
+
+p.element=addObject(
+"person",
+Math.random()<.5?"👨":"👩",
+p.x,
+p.y
+);
+
+people.push(p);
+
+}
+
+
+/* =====================================================
+PERSONEN BEWEGEN
+===================================================== */
+
+function updatePeople(){
+
+if(paused)return;
+
+for(const p of people){
+
+if(Math.random()<.008){
+
+p.targetX=Math.max(
+30,
+Math.min(
+5970,
+p.x+Math.random()*800-400
+)
+);
+
+p.targetY=Math.max(
+30,
+Math.min(
+5970,
+p.y+Math.random()*800-400
+)
+);
+
+}
+
+
+const dx=p.targetX-p.x;
+
+const dy=p.targetY-p.y;
+
+const distance=Math.sqrt(
+dx*dx+dy*dy
+);
+
+
+if(distance>5){
+
+p.x+=dx/distance*.25*gameSpeed;
+
+p.y+=dy/distance*.25*gameSpeed;
+
+}
+
+
+p.element.style.left=p.x+"px";
+
+p.element.style.top=p.y+"px";
+
+}
+
+}
+
+
+/* =====================================================
+GEBOUW SELECTEREN
+===================================================== */
+
+function selectBuilding(n){
+
+const b=buildings[n];
+
+if(!building&&n!==1){
+
+log(
+"🔒 Begin eerst met je gratis kraampje."
+);
+
+return;
+
+}
+
+
+if(building&&n===level+1){
+
+if(money<b.cost){
+
+log(
+"❌ Je hebt €"+
+money.toFixed(2)+
+", maar €"+
+b.cost.toLocaleString("nl-NL")+
+" nodig."
+);
+
+return;
+
+}
+
+}
+
+
+selected=n;
+
+document
+.querySelectorAll(".buildBtn")
+.forEach(
+x=>x.classList.remove("selected")
+);
+
+document
+.getElementById("b"+n)
+.classList.add("selected");
+
+document.getElementById("message").style.display="block";
+
+}
+
+
+/* =====================================================
+KAART KLIKKEN
+===================================================== */
+
+document
+.getElementById("map")
+.addEventListener(
+"click",
+function(e){
+
+if(selected===null)return;
+
+const rect=
+document
+.getElementById("map")
+.getBoundingClientRect();
+
+const x=
+(e.clientX-rect.left)/zoomLevel;
+
+const y=
+(e.clientY-rect.top)/zoomLevel;
+
+build(
+selected,
+x,
+y
+);
+
+}
+);
+
+
+/* =====================================================
+BOUWEN
+===================================================== */
+
+function build(n,x,y){
+
+const b=buildings[n];
+
+let cost=b.cost;
+
+if(!building&&n===1){
+
+cost=0;
+
+}
+
+
+if(money<cost){
+
+log("❌ Niet genoeg geld.");
+
+return;
+
+}
+
+
+money-=cost;
+
+
+if(!building){
+
+level=1;
+
+building={
+x:x,
+y:y,
+level:1,
+element:null
+};
+
+createBuilding(building);
+
+price=5;
+
+stockCapacity=30;
+
+setupSlider();
+
+log(
+"🎉 Je gratis kraampje is gebouwd!"
+);
+
+}
+
+else if(n===level+1){
+
+level=n;
+
+building.level=n;
+
+if(building.element){
+
+building.element.remove();
+
+}
+
+createBuilding(building);
+
+stockCapacity=
+buildings[n].capacity*15;
+
+price=buildings[n].price;
+
+setupSlider();
+
+log(
+"⬆️ Je bedrijf is nu "+
+buildings[n].name+
+"!"
+);
+
+}
+
+else{
+
+const extra={
+x:x,
+y:y,
+level:n,
+element:null
+};
+
+createBuilding(extra);
+
+log(
+"🏗️ Extra "+
+b.name+
+" gebouwd."
+);
+
+}
+
+
+selected=null;
+
+document
+.querySelectorAll(".buildBtn")
+.forEach(
+x=>x.classList.remove("selected")
+);
+
+document.getElementById(
+"message"
+).style.display="none";
+
+}
+
+
+/* =====================================================
+GEBOUW TEKENEN
+===================================================== */
+
+function createBuilding(data){
+
+const b=buildings[data.level];
+
+const el=document.createElement("div");
+
+el.className="building";
+
+el.style.left=
+(data.x-35)+"px";
+
+el.style.top=
+(data.y-45)+"px";
+
+el.innerHTML=
+b.emoji+
+"<span>"+
+b.name+
+"</span>";
+
+objects.appendChild(el);
+
+data.element=el;
+
+}
+
+
+/* =====================================================
+PRIJS
+===================================================== */
+
+function setupSlider(){
+
+const slider=
+document.getElementById(
+"priceSlider"
+);
+
+slider.value=
+Math.min(
+price,
+Number(slider.max)
+);
+
+changePrice();
+
+}
+
+
+function changePrice(){
+
+price=Number(
+document.getElementById(
+"priceSlider"
+).value
+);
+
+document.getElementById(
+"sliderPrice"
+).textContent=
+price.toFixed(2);
+
+calculateDemand();
+
+}
+
+
+/* =====================================================
+VRAAG
+===================================================== */
+
+function calculateDemand(){
+
+if(!building){
+
+demand=0;
+
+return;
+
+}
+
+
+const reference=
+buildings[building.level].price;
+
+let priceEffect=
+100*(reference/price);
+
+demand=
+priceEffect+
+quality*.4+
+advertising*.7+
+reputation*.25-
+80+
+demandModifier;
+
+demand=
+Math.max(
+0,
+Math.min(
+100,
+demand
+)
+);
+
+}
+
+
+/* =====================================================
+KLANTEN
+===================================================== */
+
+function spawnCustomers(){
+
+if(
+paused||
+!building||
+stock<=0
+)return;
+
+const capacity=
+buildings[building.level].capacity;
+
+if(customers.length>=capacity)return;
+
+const chance=
+demand/100*.08*gameSpeed;
+
+if(Math.random()<chance){
+
+const angle=
+Math.random()*Math.PI*2;
+
+const distance=
+300+Math.random()*800;
+
+const c={
+
+x:
+building.x+
+Math.cos(angle)*distance,
+
+y:
+building.y+
+Math.sin(angle)*distance,
+
+targetX:
+building.x,
+
+targetY:
+building.y,
+
+state:"going",
+
+element:null
+
+};
+
+c.element=
+addObject(
+"customer",
+Math.random()<.5?"👨":"👩",
+c.x,
+c.y
+);
+
+customers.push(c);
+
+}
+
+}
+
+
+/* =====================================================
+KLANTEN BEWEGEN
+===================================================== */
+
+function updateCustomers(){
+
+if(paused)return;
+
+for(
+let i=customers.length-1;
+i>=0;
+i--
+){
+
+const c=customers[i];
+
+const dx=
+c.targetX-c.x;
+
+const dy=
+c.targetY-c.y;
+
+const distance=
+Math.sqrt(dx*dx+dy*dy);
+
+
+if(c.state==="going"){
+
+if(distance<8){
+
+if(stock>0){
+
+stock--;
+
+money+=price;
+
+totalSalesToday+=price;
+
+reputation=
+Math.min(
+100,
+reputation+.05
+);
+
+}
+
+c.state="leaving";
+
+c.targetX=
+c.x+
+Math.random()*500-250;
+
+c.targetY=
+c.y+
+Math.random()*500-250;
+
+}
+
+else{
+
+c.x+=
+dx/distance*.8*gameSpeed;
+
+c.y+=
+dy/distance*.8*gameSpeed;
+
+}
+
+}
+
+else{
+
+if(distance<10){
+
+c.element.remove();
+
+customers.splice(i,1);
+
+continue;
+
+}
+
+c.x+=
+dx/distance*.8*gameSpeed;
+
+c.y+=
+dy/distance*.8*gameSpeed;
+
+}
+
+
+c.element.style.left=
+c.x+"px";
+
+c.element.style.top=
+c.y+"px";
+
+}
+
+}
+
+
+/* =====================================================
+INKOOPPRIJS
+===================================================== */
+
+function calculateBuyPrice(){
+
+buyPrice=
+BASE_PRODUCT_PRICE*
+(1+inflation/100)*
+supplierFactor;
+
+buyPrice=
+Math.max(
+.10,
+buyPrice
+);
+
+buyPrice=
+Number(
+buyPrice.toFixed(2)
+);
+
+}
+
+
+/* =====================================================
+PRODUCTEN
+===================================================== */
+
+function updateProductPrices(){
+
+const box=
+document.getElementById(
+"productPrices"
+);
+
+box.innerHTML=`
+<div class="product">
+
+<span class="product-name">
+📦 Product
+</span>
+
+<span class="product-price">
+€${buyPrice.toFixed(2)}
+</span>
+
+<div style="clear:both"></div>
+
+<small>
+Huidige inkoopprijs
+</small>
+
+</div>
+`;
+
+}
+
+
+function buyProducts(amount){
+
+if(!building){
+
+log(
+"❌ Je hebt nog geen bedrijf."
+);
+
+return;
+
+}
+
+
+if(stock+amount>stockCapacity){
+
+log(
+"📦 Niet genoeg opslagruimte."
+);
+
+return;
+
+}
+
+
+const total=
+amount*buyPrice;
+
+if(money<total){
+
+log(
+"❌ Je hebt €"+
+total.toFixed(2)+
+" nodig."
+);
+
+return;
+
+}
+
+
+money-=total;
+
+stock+=amount;
+
+log(
+"🛒 "+
+amount+
+" producten gekocht voor €"+
+total.toFixed(2)
+);
+
+}
+
+
+/* =====================================================
+OPSLAG
+===================================================== */
+
+function upgradeStorage(){
+
+if(money<500){
+
+log(
+"❌ Je hebt €500 nodig."
+);
+
+return;
+
+}
+
+money-=500;
+
+stockCapacity+=50;
+
+log(
+"📦 Opslag +50."
+);
+
+}
+
+
+/* =====================================================
+RECLAME
+===================================================== */
+
+function advertise(){
+
+if(money<500){
+
+log(
+"❌ Je hebt €500 nodig."
+);
+
+return;
+
+}
+
+money-=500;
+
+advertising=
+Math.min(
+100,
+advertising+15
+);
+
+reputation=
+Math.min(
+100,
+reputation+2
+);
+
+log(
+"📢 Reclame verhoogt de vraag."
+);
+
+}
+
+
+/* =====================================================
+KWALITEIT
+===================================================== */
+
+function upgradeQuality(){
+
+if(money<1000){
+
+log(
+"❌ Je hebt €1.000 nodig."
+);
+
+return;
+
+}
+
+money-=1000;
+
+quality=
+Math.min(
+100,
+quality+10
+);
+
+reputation=
+Math.min(
+100,
+reputation+5
+);
+
+log(
+"⭐ Productkwaliteit verbeterd."
+);
+
+}
+
+
+/* =====================================================
+BELASTING
+===================================================== */
+
+/*
+Progressieve belasting:
+
+€0 - €1.000        = 0%
+€1.000 - €5.000    = 5%
+€5.000 - €25.000   = 10%
+€25.000 - €100.000 = 15%
+€100.000 - €500.000 = 20%
+€500.000 - €2m     = 25%
+€2m - €10m         = 30%
+€10m+              = 35%
+
+Belangrijk:
+Het hogere percentage geldt alleen voor
+het geld binnen die schijf.
+*/
+
+function getTax(){
+
+let remaining=
+Math.max(
+0,
+money
+);
+
+let tax=0;
+
+const brackets=[
+
+{
+limit:1000,
+rate:0
+},
+
+{
+limit:5000,
+rate:.05
+},
+
+{
+limit:25000,
+rate:.10
+},
+
+{
+limit:100000,
+rate:.15
+},
+
+{
+limit:500000,
+rate:.20
+},
+
+{
+limit:2000000,
+rate:.25
+},
+
+{
+limit:10000000,
+rate:.30
+},
+
+{
+limit:Infinity,
+rate:.35
+}
+
+];
+
+let previous=0;
+
+for(
+const bracket of brackets
+){
+
+if(remaining<=previous)break;
+
+const taxable=
+Math.min(
+remaining,
+bracket.limit
+)-
+previous;
+
+if(taxable>0){
+
+tax+=
+taxable*
+bracket.rate;
+
+}
+
+previous=
+bracket.limit;
+
+}
+
+return tax;
+
+}
+
+
+function getTaxRate(){
+
+if(money<=1000)return 0;
+
+if(money<=5000)return 5;
+
+if(money<=25000)return 10;
+
+if(money<=100000)return 15;
+
+if(money<=500000)return 20;
+
+if(money<=2000000)return 25;
+
+if(money<=10000000)return 30;
+
+return 35;
+
+}
+
+
+/* =====================================================
+BELASTING BEREKENING
+===================================================== */
+
+function updateTax(){
+
+dailyTax=getTax();
+
+const rate=getTaxRate();
+
+document.getElementById(
+"taxRate"
+).textContent=rate;
+
+document.getElementById(
+"taxPreview"
+).textContent=
+dailyTax.toFixed(2);
+
+
+let explanation="";
+
+if(rate===0){
+
+explanation=
+"Je betaalt momenteel geen belasting.";
+
+}
+else{
+
+explanation=
+"Je geschatte belasting is €"+
+dailyTax.toFixed(2)+
+" per 2 dagen.";
+
+}
+
+
+document.getElementById(
+"taxInfo"
+).innerHTML=`
+<div>
+<b>
+Huidig tarief: ${rate}%
+</b>
+</div>
+
+<br>
+
+<div>
+${explanation}
+</div>
+
+<br>
+
+<small>
+Meer geld betekent dat je in hogere belastingtarieven terechtkomt.
+De belasting wordt elke 2 dagen betaald.
+</small>
+`;
+
+}
+
+
+/* =====================================================
+BELASTING ELKE 2 DAGEN
+===================================================== */
+
+function payTaxes(){
+
+if(!building)return;
+
+const tax=getTax();
+
+if(tax<=0){
+
+log(
+"🧾 Geen belasting vandaag."
+);
+
+return;
+
+}
+
+
+const actualTax=
+Math.min(
+money,
+tax
+);
+
+money-=actualTax;
+
+log(
+"🧾 Belasting betaald: €"+
+actualTax.toFixed(2)+
+" ("+
+getTaxRate()+
+"%)"
+);
+
+showEconomicPopup(
+"🧾 Belasting",
+"De overheid heeft vandaag belasting geheven.",
+"Je betaalde €"+
+actualTax.toFixed(2)+
+"."
+);
+
+}
+
+
+/* =====================================================
+PRODUCENT POPUP
+===================================================== */
+
+function showProducerChoice(){
+
+if(!building||paused)return;
+
+choices=[
+
+function(){
+
+const change=
+1.10+
+Math.random()*.35;
+
+supplierFactor*=change;
+
+supplierFactor=
+Math.min(
+10,
+supplierFactor
+);
+
+calculateBuyPrice();
+
+log(
+"🏭 Producent verhoogt de prijs met "+
+Math.round((change-1)*100)+
+"%."
+);
+
+showEconomicPopup(
+"📈 Producent verhoogt prijs",
+"De producent heeft zijn prijs flink verhoogd.",
+"Nieuwe inkoopprijs: €"+
+buyPrice.toFixed(2)
+);
+
+},
+
+function(){
+
+const change=
+1.03+
+Math.random()*.12;
+
+supplierFactor*=change;
+
+calculateBuyPrice();
+
+log(
+"🏭 Producent verhoogt de prijs een beetje."
+);
+
+showEconomicPopup(
+"📈 Prijs omhoog",
+"De producent verhoogt zijn prijs.",
+"Nieuwe inkoopprijs: €"+
+buyPrice.toFixed(2)
+);
+
+},
+
+function(){
+
+const change=
+.75+
+Math.random()*.55;
+
+const oldPrice=buyPrice;
+
+supplierFactor*=change;
+
+supplierFactor=
+Math.max(
+.25,
+Math.min(
+10,
+supplierFactor
+)
+);
+
+calculateBuyPrice();
+
+const difference=
+((buyPrice-oldPrice)/oldPrice)*100;
+
+if(difference < -3){
+
+log(
+"🏭 Nieuwe producent is "+
+Math.round(Math.abs(difference))+
+"% goedkoper."
+);
+
+showEconomicPopup(
+"📉 Goedkopere producent!",
+"Je hebt een nieuwe producent gevonden die goedkoper is.",
+"Nieuwe inkoopprijs: €"+
+buyPrice.toFixed(2)
+);
+
+}
+
+else if(difference > 3){
+
+log(
+"🏭 Nieuwe producent blijkt "+
+Math.round(difference)+
+"% duurder."
+);
+
+showEconomicPopup(
+"📈 Nieuwe producent is duurder",
+"De nieuwe producent leek interessant, maar blijkt uiteindelijk duurder.",
+"Nieuwe inkoopprijs: €"+
+buyPrice.toFixed(2)
+);
+
+}
+
+else{
+
+log(
+"🏭 Nieuwe producent heeft ongeveer dezelfde prijs."
+);
+
+showEconomicPopup(
+"➡️ Ongeveer dezelfde prijs",
+"De nieuwe producent is ongeveer even duur als je vorige producent.",
+"Nieuwe inkoopprijs: €"+
+buyPrice.toFixed(2)
+);
+
+}
+
+}
+
+];
+
+
+document.getElementById(
+"choiceTitle"
+).textContent=
+"🏭 Producent";
+
+
+document.getElementById(
+"choiceText"
+).textContent=
+"Je producent heeft besloten zijn prijzen opnieuw te bekijken. Wat doe je?";
+
+
+document.getElementById(
+"choice0"
+).textContent=
+"📈 Grote prijsstijging accepteren";
+
+
+document.getElementById(
+"choice1"
+).textContent=
+"📈 Kleine prijsstijging accepteren";
+
+
+document.getElementById(
+"choice2"
+).textContent=
+"📉 Goedkopere producent zoeken";
+
+
+document.getElementById(
+"choice"
+).style.display=
+"block";
+
+}
+
+
+/* =====================================================
+KEUZE
+===================================================== */
+
+function choose(n){
+
+if(!choices)return;
+
+choices[n]();
+
+document.getElementById(
+"choice"
+).style.display=
+"none";
+
+updateProductPrices();
+
+updateUI();
+
+}
+
+
+/* =====================================================
+ECONOMISCHE POPUP
+===================================================== */
+
+function showEconomicPopup(
+title,
+text,
+effect
+){
+
+const popup=
+document.createElement("div");
+
+popup.style.position=
+"fixed";
+
+popup.style.left="50%";
+
+popup.style.top="50%";
+
+popup.style.transform=
+"translate(-50%,-50%)";
+
+popup.style.zIndex=
+"9999";
+
+popup.style.width=
+"430px";
+
+popup.style.maxWidth=
+"90%";
+
+popup.style.background=
+"#17232e";
+
+popup.style.border=
+"2px solid #718493";
+
+popup.style.borderRadius=
+"15px";
+
+popup.style.padding=
+"25px";
+
+popup.style.boxShadow=
+"0 20px 80px rgba(0,0,0,.7)";
+
+popup.innerHTML=`
+
+<h1 style="margin-top:0;text-align:center">
+${title}
+</h1>
+
+<p style="font-size:17px;line-height:1.5">
+${text}
+</p>
+
+<div
+style="
+background:#22333f;
+padding:12px;
+border-radius:8px;
+margin:15px 0;
+"
+>
+${effect}
+</div>
+
+<button
+style="width:100%;font-size:16px"
+onclick="this.parentElement.remove()"
+>
+OK
+</button>
+
+`;
+
+document.body.appendChild(popup);
+
+}
+
+
+/* =====================================================
+TIJD
+===================================================== */
+
+function updateTime(){
+
+if(paused)return;
+
+hour+=.003*gameSpeed;
+
+if(hour>=24){
+
+hour=0;
+
+day++;
+
+
+/* BELASTING ELKE 2 DAGEN */
+
+if(day%2===0){
+
+payTaxes();
+
+}
+
+
+/* PRODUCENT */
+
+if(Math.random()<.40){
+
+showProducerChoice();
+
+}
+
+
+/* ECONOMISCHE GEBEURTENIS */
+
+if(Math.random()<.25){
+
+randomEconomicEvent();
+
+}
+
+
+/* KINDEREN */
+
+if(
+people.length<1000&&
+Math.random()<.65
+){
+
+const babies=
+Math.random()<.15
+?2
+:1;
+
+for(
+let i=0;
+i<babies;
+i++
+){
+
+createPerson();
+
+population++;
+
+}
+
+log(
+"👶 Er zijn nieuwe kinderen geboren."
+);
+
+}
+
+
+advertising*=.97;
+
+demandModifier*=.9;
+
+}
+
+}
+
+
+/* =====================================================
+RANDOM ECONOMIE
+===================================================== */
+
+function randomEconomicEvent(){
+
+if(!building)return;
+
+const event=
+Math.floor(
+Math.random()*7
+);
+
+
+if(event===0){
+
+inflation+=
+1+
+Math.random()*4;
+
+log(
+"📈 Inflatie stijgt."
+);
+
+showEconomicPopup(
+"📈 Inflatie stijgt",
+"De algemene prijzen beginnen sneller te stijgen.",
+"Je inkoopproducten worden duurder."
+);
+
+}
+
+
+else if(event===1){
+
+inflation+=
+5+
+Math.random()*8;
+
+log(
+"🔥 Hoge inflatie!"
+);
+
+showEconomicPopup(
+"🔥 Hoge inflatie",
+"De economie heeft een sterke periode van prijsstijgingen.",
+"Je inkoopprijs kan flink oplopen."
+);
+
+}
+
+
+else if(event===2){
+
+inflation-=
+1+
+Math.random()*4;
+
+log(
+"📉 Inflatie daalt."
+);
+
+showEconomicPopup(
+"📉 Inflatie daalt",
+"De prijsstijgingen worden kleiner.",
+"Je producten worden relatief goedkoper."
+);
+
+}
+
+
+else if(event===3){
+
+inflation-=
+4+
+Math.random()*6;
+
+log(
+"📉 Deflatie!"
+);
+
+showEconomicPopup(
+"📉 Deflatie",
+"Prijzen beginnen in de economie te dalen.",
+"Je inkoopprijs kan goedkoper worden."
+);
+
+}
+
+
+else if(event===4){
+
+demandModifier+=
+10+
+Math.random()*20;
+
+log(
+"📈 Economische boom!"
+);
+
+showEconomicPopup(
+"📈 Economische boom",
+"Mensen hebben meer vertrouwen en geven meer geld uit.",
+"De vraag naar je producten stijgt."
+);
+
+}
+
+
+else if(event===5){
+
+demandModifier-=
+10+
+Math.random()*25;
+
+log(
+"📉 Recessie!"
+);
+
+showEconomicPopup(
+"📉 Recessie",
+"Mensen worden voorzichtiger met hun geld.",
+"De vraag naar je producten daalt."
+);
+
+}
+
+
+else{
+
+supplierFactor*=
+.85+
+Math.random()*.15;
+
+calculateBuyPrice();
+
+log(
+"🏭 Leveranciers verlagen tijdelijk hun prijzen."
+);
+
+showEconomicPopup(
+"🏭 Leverancierskorting",
+"Leveranciers hebben tijdelijk lagere kosten.",
+"Nieuwe inkoopprijs: €"+
+buyPrice.toFixed(2)
+);
+
+}
+
+
+inflation=
+Math.max(
+-20,
+Math.min(
+150,
+inflation
+)
+);
+
+demandModifier=
+Math.max(
+-100,
+Math.min(
+100,
+demandModifier
+)
+);
+
+calculateBuyPrice();
+
+updateProductPrices();
+
+updateUI();
+
+}
+
+
+/* =====================================================
+UI
+===================================================== */
+
+function updateUI(){
+
+calculateDemand();
+
+calculateBuyPrice();
+
+updateTax();
+
+
+document.getElementById(
+"money"
+).textContent=
+"💰 €"+
+money.toFixed(2);
+
+
+document.getElementById(
+"companyMoney"
+).textContent=
+money.toFixed(2);
+
+
+document.getElementById(
+"level"
+).textContent=
+level;
+
+
+document.getElementById(
+"levelName"
+).textContent=
+building
+?buildings[level].name
+:"Nog geen bedrijf";
+
+
+document.getElementById(
+"customers"
+).textContent=
+customers.length;
+
+
+document.getElementById(
+"demand"
+).textContent=
+Math.floor(demand);
+
+
+document.getElementById(
+"demandBar"
+).style.width=
+demand+"%";
+
+
+document.getElementById(
+"price"
+).textContent=
+price.toFixed(2);
+
+
+document.getElementById(
+"buyPrice"
+).textContent=
+buyPrice.toFixed(2);
+
+
+document.getElementById(
+"profit"
+).textContent=
+(price-buyPrice).toFixed(2);
+
+
+document.getElementById(
+"stock"
+).textContent=
+stock;
+
+
+document.getElementById(
+"capacity"
+).textContent=
+stockCapacity;
+
+
+document.getElementById(
+"inflation"
+).textContent=
+inflation.toFixed(1);
+
+
+document.getElementById(
+"population"
+).textContent=
+people.length;
+
+
+document.getElementById(
+"day"
+).textContent=
+day;
+
+
+const h=
+Math.floor(hour);
+
+const m=
+Math.floor(
+(hour-h)*60
+);
+
+document.getElementById(
+"time"
+).textContent=
+String(h).padStart(2,"0")+
+":"+
+String(m).padStart(2,"0");
+
+
+document.getElementById(
+"speed"
+).textContent=
+gameSpeed.toFixed(1)+
+"x";
+
+
+document.getElementById(
+"zoomText"
+).textContent=
+Math.round(
+zoomLevel*100
+)+
+"%";
+
+
+updateProductPrices();
+
+}
+
+
+/* =====================================================
+LOG
+===================================================== */
+
+function log(text){
+
+const box=
+document.getElementById(
+"log"
+);
+
+const line=
+document.createElement("div");
+
+line.textContent=
+"• "+
+text;
+
+box.prepend(line);
+
+while(
+box.children.length>50
+){
+
+box.lastChild.remove();
+
+}
+
+}
+
+
+/* =====================================================
+ZOOM
+===================================================== */
+
+function zoom(amount){
+
+zoomLevel+=amount;
+
+zoomLevel=
+Math.max(
+.2,
+Math.min(
+2.5,
+zoomLevel
+)
+);
+
+document.getElementById(
+"world"
+).style.transform=
+`scale(${zoomLevel})`;
+
+document.getElementById(
+"zoomText"
+).textContent=
+Math.round(
+zoomLevel*100
+)+
+"%";
+
+}
+
+
+document
+.getElementById("map")
+.addEventListener(
+"wheel",
+function(e){
+
+e.preventDefault();
+
+zoom(
+e.deltaY<0
+?.08
+:-.08
+);
+
+},
+{passive:false}
+);
+
+
+/* =====================================================
+PAUZE
+===================================================== */
+
+function pauseGame(){
+
+paused=!paused;
+
+document.getElementById(
+"pause"
+).textContent=
+paused
+?"▶️ Doorgaan"
+:"⏸️ Pauze";
+
+}
+
+
+/* =====================================================
+SNELHEID
+===================================================== */
+
+function changeSpeed(x){
+
+gameSpeed+=x*.5;
+
+gameSpeed=
+Math.max(
+.5,
+Math.min(
+10,
+gameSpeed
+)
+);
+
+log(
+"⚡ Snelheid: "+
+gameSpeed.toFixed(1)+
+"x"
+);
+
+}
+
+
+/* =====================================================
+OPSLAAN
+===================================================== */
+
+function saveGame(){
+
+const data={
+
+money,
+level,
+price,
+stock,
+stockCapacity,
+inflation,
+supplierFactor,
+demandModifier,
+quality,
+advertising,
+reputation,
+day,
+hour,
+population,
+totalSalesToday,
+
+building:
+building
+?{
+x:building.x,
+y:building.y,
+level:building.level
+}
+:null
+
+};
+
+localStorage.setItem(
+"wereldSimulator",
+JSON.stringify(data)
+);
+
+log(
+"💾 Spel opgeslagen!"
+);
+
+}
+
+
+/* =====================================================
+LADEN
+===================================================== */
+
+function loadGame(){
+
+const saved=
+localStorage.getItem(
+"wereldSimulator"
+);
+
+if(!saved){
+
+log(
+"❌ Geen opgeslagen spel."
+);
+
+return;
+
+}
+
+
+const data=
+JSON.parse(saved);
+
+
+money=data.money??500;
+
+level=data.level??0;
+
+price=data.price??5;
+
+stock=data.stock??0;
+
+stockCapacity=
+data.stockCapacity??30;
+
+inflation=
+data.inflation??0;
+
+supplierFactor=
+data.supplierFactor??1;
+
+demandModifier=
+data.demandModifier??0;
+
+quality=
+data.quality??30;
+
+advertising=
+data.advertising??0;
+
+reputation=
+data.reputation??50;
+
+day=data.day??1;
+
+hour=data.hour??8;
+
+population=
+data.population??80;
+
+totalSalesToday=
+data.totalSalesToday??0;
+
+
+people.forEach(
+p=>p.element.remove()
+);
+
+people=[];
+
+
+customers.forEach(
+c=>c.element.remove()
+);
+
+customers=[];
+
+
+if(
+building&&
+building.element
+){
+
+building.element.remove();
+
+}
+
+building=null;
+
+
+if(data.building){
+
+building={
+
+x:data.building.x,
+
+y:data.building.y,
+
+level:data.building.level,
+
+element:null
+
+};
+
+createBuilding(building);
+
+}
+
+
+nextPerson=0;
+
+
+for(
+let i=0;
+i<population;
+i++
+){
+
+createPerson();
+
+}
+
+
+calculateBuyPrice();
+
+setupSlider();
+
+updateUI();
+
+log(
+"📂 Spel geladen!"
+);
+
+}
+
+
+/* =====================================================
+START
+===================================================== */
+
+createWorld();
+
+calculateBuyPrice();
+
+setupSlider();
+
+updateUI();
+
+log(
+"🌍 De wereld is gestart!"
+);
+
+log(
+"💰 Je begint met €500."
+);
+
+log(
+"🛖 Je eerste kraampje is gratis."
+);
+
+log(
+"🏗️ Er zijn 10 soorten gebouwen."
+);
+
+log(
+"🏭 Producenten veranderen regelmatig hun prijzen."
+);
+
+log(
+"📈 Inflatie en 📉 deflatie beïnvloeden je inkoopprijs."
+);
+
+log(
+"🧾 Belasting is progressief en wordt elke 2 dagen betaald."
+);
+
+
+/* =====================================================
+GAME LOOP
+===================================================== */
+
+function loop(){
+
+updatePeople();
+
+updateCustomers();
+
+spawnCustomers();
+
+updateTime();
+
+updateUI();
+
+requestAnimationFrame(loop);
+
+}
+
+loop();
+
+</script>
+
+</body>
+</html>
