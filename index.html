@@ -133,13 +133,6 @@ button:hover{
     pointer-events:none;
 }
 
-.competitorCustomer{
-    position:absolute;
-    font-size:25px;
-    z-index:24;
-    pointer-events:none;
-}
-
 .building{
     position:absolute;
     z-index:15;
@@ -149,30 +142,16 @@ button:hover{
     pointer-events:none;
 }
 
+/* CONCURRENT */
+.competitorBuilding{position:absolute;z-index:14;text-align:center;font-size:50px;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.5));pointer-events:none;}
+.competitorBuilding span{display:block;font-size:12px;font-weight:bold;background:rgba(0,0,0,.65);border-radius:5px;padding:3px 6px;white-space:nowrap;}
+.competitorCustomer{position:absolute;font-size:25px;z-index:24;pointer-events:none;}
+
 .building span{
     display:block;
     font-size:12px;
     font-weight:bold;
     background:rgba(0,0,0,.65);
-    border-radius:5px;
-    padding:3px 6px;
-    white-space:nowrap;
-}
-
-.competitorBuilding{
-    position:absolute;
-    z-index:14;
-    text-align:center;
-    font-size:50px;
-    filter:drop-shadow(2px 3px 2px rgba(0,0,0,.5));
-    pointer-events:none;
-}
-
-.competitorBuilding span{
-    display:block;
-    font-size:11px;
-    font-weight:bold;
-    background:rgba(80,20,20,.8);
     border-radius:5px;
     padding:3px 6px;
     white-space:nowrap;
@@ -322,29 +301,25 @@ input[type=range]{
     position:fixed;
     z-index:10000;
     display:none;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:500px;
-    max-width:90%;
+    inset:0;
+    background:rgba(0,0,0,.88);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+#gameOverBox{
     background:#17232e;
     border:2px solid #718493;
     border-radius:15px;
     padding:30px;
-    text-align:center;
-    box-shadow:0 20px 100px #000;
+    width:450px;
+    max-width:90%;
+    box-shadow:0 20px 80px #000;
 }
 
 #gameOver h1{
-    font-size:40px;
-}
-
-.competitorGood{
-    color:#8ee28e;
-}
-
-.competitorBad{
-    color:#ff9c9c;
+    font-size:38px;
 }
 </style>
 </head>
@@ -372,37 +347,37 @@ input[type=range]{
 
 <div id="map">
 
-<div id="world">
+    <div id="world">
 
-<div class="grass"></div>
+        <div class="grass"></div>
 
-<div class="water"
-style="left:800px;top:300px;width:1000px;height:550px">
-</div>
+        <div class="water"
+             style="left:800px;top:300px;width:1000px;height:550px">
+        </div>
 
-<div class="water"
-style="left:3500px;top:2800px;width:1000px;height:650px">
-</div>
+        <div class="water"
+             style="left:3500px;top:2800px;width:1000px;height:650px">
+        </div>
 
-<div class="road"
-style="left:0;top:1100px;width:6000px;height:100px">
-</div>
+        <div class="road"
+             style="left:0;top:1100px;width:6000px;height:100px">
+        </div>
 
-<div class="road"
-style="left:2500px;top:0;width:100px;height:6000px">
-</div>
+        <div class="road"
+             style="left:2500px;top:0;width:100px;height:6000px">
+        </div>
 
-<div class="roadLine"
-style="left:0;top:1147px;width:6000px;height:6px">
-</div>
+        <div class="roadLine"
+             style="left:0;top:1147px;width:6000px;height:6px">
+        </div>
 
-<div class="roadLine"
-style="left:2547px;top:0;width:6px;height:6000px">
-</div>
+        <div class="roadLine"
+             style="left:2547px;top:0;width:6px;height:6000px">
+        </div>
 
-<div id="objects"></div>
+        <div id="objects"></div>
 
-</div>
+    </div>
 </div>
 
 <div id="message">
@@ -411,370 +386,377 @@ style="left:2547px;top:0;width:6px;height:6000px">
 
 <div id="panel">
 
-<div class="box">
-<h2>🏢 Mijn bedrijf</h2>
+    <div class="box">
 
-💰 Geld
+        <h2>🏢 Mijn bedrijf</h2>
 
-<div class="big">
-€<span id="companyMoney">500</span>
-</div>
+        💰 Geld
 
-<br>
+        <div class="big">
+            €<span id="companyMoney">500</span>
+        </div>
 
-🏢 Niveau:
-<b id="level">0</b>
+        <br>
 
-<br>
+        🏢 Niveau:
+        <b id="level">0</b>
 
-<span id="levelName">
-Nog geen bedrijf
-</span>
-</div>
+        <br>
 
+        <span id="levelName">
+            Nog geen bedrijf
+        </span>
 
-<div class="box">
+    </div>
 
-<h2>📊 Economie</h2>
 
-👥 Klanten:
-<b id="customers">0</b>
+    <div class="box" id="competitorBox" style="display:none">
 
-<br><br>
+        <h2>🏪 Concurrent</h2>
 
-📈 Vraag:
-<b id="demand">0</b>%
+        💰 Geld: €<b id="competitorMoney">0</b>
 
-<div class="bar">
-<div id="demandBar"></div>
-</div>
+        <br><br>
 
-<br>
+        👥 Klanten: <b id="competitorCustomers">0</b>
 
-💵 Verkoopprijs:
-€<b id="price">5.00</b>
+        <br><br>
 
-<br><br>
+        💵 Prijs: €<b id="competitorPrice">0.00</b>
 
-🏭 Inkoopprijs:
-€<b id="buyPrice">3.25</b>
+        <br><br>
 
-<br><br>
+        ⭐ Kwaliteit: <b id="competitorQuality">0</b>
 
-💰 Winst per product:
-€<b id="profit">1.75</b>
+    </div>
 
-<br><br>
 
-📦 Voorraad:
-<b id="stock">0</b> /
-<b id="capacity">30</b>
+    <div class="box">
 
-<br><br>
+        <h2>📊 Economie</h2>
 
-📈 Inflatie:
-<b id="inflation">0</b>%
+        👥 Klanten:
+        <b id="customers">0</b>
 
-<br><br>
+        <br><br>
 
-🧾 Belastingtarief:
-<b id="taxRate">0</b>%
+        👥 Klantcapaciteit:
+        <b id="customerCapacity">0</b>
 
-<br>
+        <br><br>
 
-💸 Belasting:
-€<b id="taxPreview">0.00</b>
+        📈 Vraag:
+        <b id="demand">0</b>%
 
-</div>
+        <div class="bar">
+            <div id="demandBar"></div>
+        </div>
 
+        <br>
 
-<div class="box">
+        💵 Verkoopprijs:
+        €<b id="price">5.00</b>
 
-<h2>🏗️ Gebouwen</h2>
+        <br><br>
 
-<button class="buildBtn"
-id="b1"
-onclick="selectBuilding(1)">
-🛖 Kraampje — GRATIS
-</button>
+        🏭 Inkoopprijs:
+        €<b id="buyPrice">3.25</b>
 
-<button class="buildBtn"
-id="b2"
-onclick="selectBuilding(2)">
-🏪 Kleine winkel — €250
-</button>
+        <br><br>
 
-<button class="buildBtn"
-id="b3"
-onclick="selectBuilding(3)">
-🏬 Supermarkt — €1.000
-</button>
+        💰 Winst per product:
+        €<b id="profit">1.75</b>
 
-<button class="buildBtn"
-id="b4"
-onclick="selectBuilding(4)">
-🏢 Kantoor — €5.000
-</button>
+        <br><br>
 
-<button class="buildBtn"
-id="b5"
-onclick="selectBuilding(5)">
-🏭 Fabriek — €20.000
-</button>
+        📦 Voorraad:
+        <b id="stock">0</b> /
+        <b id="capacity">30</b>
 
-<button class="buildBtn"
-id="b6"
-onclick="selectBuilding(6)">
-🚗 Autofabriek — €75.000
-</button>
+        <br><br>
 
-<button class="buildBtn"
-id="b7"
-onclick="selectBuilding(7)">
-🏗️ Grote fabriek — €100.000
-</button>
+        📈 Inflatie:
+        <b id="inflation">0</b>%
 
-<button class="buildBtn"
-id="b8"
-onclick="selectBuilding(8)">
-🏙️ Bedrijfscentrum — €200.000
-</button>
+        <br><br>
 
-<button class="buildBtn"
-id="b9"
-onclick="selectBuilding(9)">
-🏢 Hoofdkantoor — €500.000
-</button>
+        🧾 Belastingtarief:
+        <b id="taxRate">0</b>%
 
-<button class="buildBtn"
-id="b10"
-onclick="selectBuilding(10)">
-🌆 Megabedrijf — €1.000.000
-</button>
+        <br>
 
-</div>
+        💸 Belasting per dag:
+        €<b id="taxPreview">0.00</b>
 
+    </div>
 
-<div class="box">
 
-<h2>📦 Producten</h2>
+    <div class="box">
 
-<div id="productPrices"></div>
+        <h2>🏗️ Gebouwen</h2>
 
-<button onclick="buyProducts(10)">
-🛒 Koop 10
-</button>
+        <button class="buildBtn"
+                id="b1"
+                onclick="selectBuilding(1)">
+            🛖 Kraampje — GRATIS
+        </button>
 
-<button onclick="buyProducts(50)">
-📦 Koop 50
-</button>
+        <button class="buildBtn"
+                id="b2"
+                onclick="selectBuilding(2)">
+            🏪 Kleine winkel — €250
+        </button>
 
-<button onclick="buyProducts(100)">
-🚚 Koop 100
-</button>
+        <button class="buildBtn"
+                id="b3"
+                onclick="selectBuilding(3)">
+            🏬 Supermarkt — €1.000
+        </button>
 
-<button onclick="buyProducts(500)">
-📦 Koop 500
-</button>
+        <button class="buildBtn"
+                id="b4"
+                onclick="selectBuilding(4)">
+            🏢 Kantoor — €5.000
+        </button>
 
-<button onclick="buyProducts(1000)">
-🚛 Koop 1000
-</button>
+        <button class="buildBtn"
+                id="b5"
+                onclick="selectBuilding(5)">
+            🏭 Fabriek — €20.000
+        </button>
 
-<br><br>
+        <button class="buildBtn"
+                id="b6"
+                onclick="selectBuilding(6)">
+            🚗 Autofabriek — €75.000
+        </button>
 
-<button onclick="upgradeStorage()">
-📦 Opslag +50 — €500
-</button>
+        <button class="buildBtn"
+                id="b7"
+                onclick="selectBuilding(7)">
+            🏗️ Grote fabriek — €100.000
+        </button>
 
-</div>
+        <button class="buildBtn"
+                id="b8"
+                onclick="selectBuilding(8)">
+            🏙️ Bedrijfscentrum — €200.000
+        </button>
 
+        <button class="buildBtn"
+                id="b9"
+                onclick="selectBuilding(9)">
+            🏢 Hoofdkantoor — €500.000
+        </button>
 
-<div class="box">
+        <button class="buildBtn"
+                id="b10"
+                onclick="selectBuilding(10)">
+            🌆 Megabedrijf — €1.000.000
+        </button>
 
-<h2>💵 Verkoopprijs</h2>
+    </div>
 
-<input
-type="range"
-id="priceSlider"
-min="0.50"
-max="1000"
-step="0.50"
-value="5"
-oninput="changePrice()"
->
 
-<br>
+    <div class="box">
 
-€<b id="sliderPrice">5.00</b>
+        <h2>📦 Producten</h2>
 
-</div>
+        <div id="productPrices"></div>
 
+        <button onclick="buyProducts(10)">
+            🛒 Koop 10
+        </button>
 
-<div class="box">
+        <button onclick="buyProducts(50)">
+            📦 Koop 50
+        </button>
 
-<button onclick="advertise()">
-📢 Reclame — €500
-</button>
+        <button onclick="buyProducts(100)">
+            🚚 Koop 100
+        </button>
 
-<button onclick="upgradeQuality()">
-⭐ Kwaliteit — €1.000
-</button>
+        <br><br>
 
-</div>
+        <button onclick="upgradeStorage()">
+            📦 Opslag +50 — €500
+        </button>
 
+    </div>
 
-<div class="box">
 
-<h2>🧾 Belastingen</h2>
+    <div class="box">
 
-<p>
-De belasting is progressief:
-hoe meer geld je hebt, hoe hoger het percentage.
-</p>
+        <h2>💵 Verkoopprijs</h2>
 
-<div id="taxInfo"></div>
+        <input
+            type="range"
+            id="priceSlider"
+            min="0.50"
+            max="500"
+            step="0.50"
+            value="5"
+            oninput="changePrice()">
 
-<br>
+        <br>
 
-<button onclick="lowerTaxes()">
-🧾 Belasting verlagen
-</button>
+        €<b id="sliderPrice">5.00</b>
 
-</div>
+    </div>
 
 
-<div class="box">
+    <div class="box">
 
-<h2>🏭 Concurrent</h2>
+        <button onclick="advertise()">
+            📢 Reclame — €500
+        </button>
 
-👤 Status:
-<b id="competitorStatus">
-Nog niet gekomen
-</b>
+        <button onclick="upgradeQuality()">
+            ⭐ Kwaliteit — €1.000
+        </button>
 
-<br><br>
+    </div>
 
-💰 Geld:
-€<b id="competitorMoney">0</b>
 
-<br><br>
+    <div class="box">
 
-👥 Klanten:
-<b id="competitorCustomers">0</b>
+        <h2>🧾 Belastingen</h2>
 
-<br><br>
+        <p>
+            De belasting is progressief:
+            hoe meer geld je hebt,
+            hoe hoger het percentage.
+        </p>
 
-🏢 Niveau:
-<b id="competitorLevel">0</b>
+        <div id="taxInfo"></div>
 
-<br><br>
+    </div>
 
-📈 Vraag:
-<b id="competitorDemand">0</b>%
 
-<br><br>
+    <div class="box">
 
-⭐ Kwaliteit:
-<b id="competitorQuality">0</b>
+        <h2>🌍 Wereld</h2>
 
-</div>
+        📅 Dag:
+        <b id="day">1</b>
 
+        <br><br>
 
-<div class="box">
+        👥 Bevolking:
+        <b id="population">80</b>
 
-<h2>🌍 Wereld</h2>
+        <br><br>
 
-📅 Dag:
-<b id="day">1</b>
+        ⏰ Tijd:
+        <b id="time">08:00</b>
 
-<br><br>
+        <br><br>
 
-👥 Bevolking:
-<b id="population">80</b>
+        ⚡ Snelheid:
+        <b id="speed">1x</b>
 
-<br><br>
+    </div>
 
-⏰ Tijd:
-<b id="time">08:00</b>
 
-<br><br>
+    <div class="box">
 
-⚡ Snelheid:
-<b id="speed">1x</b>
+        <h2>📰 Nieuws</h2>
 
-</div>
+        <div id="log"></div>
 
-
-<div class="box">
-
-<h2>📰 Nieuws</h2>
-
-<div id="log"></div>
-
-</div>
+    </div>
 
 </div>
 
 
 <div id="zoom">
 
-🔍 Zoom:
-<span id="zoomText">60%</span>
+    🔍 Zoom:
+    <span id="zoomText">60%</span>
 
-<br>
+    <br>
 
-🖱️ Muiswiel = zoomen
+    🖱️ Muiswiel = zoomen
 
 </div>
 
 
 <div id="choice">
 
-<h2 id="choiceTitle">
-🏭 Producent
-</h2>
+    <h2 id="choiceTitle">
+        🏭 Producent
+    </h2>
 
-<p id="choiceText"></p>
+    <p id="choiceText"></p>
 
-<button class="choice"
-id="choice0"
-onclick="choose(0)">
-</button>
+    <button
+        class="choice"
+        id="choice0"
+        onclick="choose(0)">
+    </button>
 
-<button class="choice"
-id="choice1"
-onclick="choose(1)">
-</button>
+    <button
+        class="choice"
+        id="choice1"
+        onclick="choose(1)">
+    </button>
 
-<button class="choice"
-id="choice2"
-onclick="choose(2)">
-</button>
+    <button
+        class="choice"
+        id="choice2"
+        onclick="choose(2)">
+    </button>
 
-<button class="choice"
-id="choice3"
-onclick="choose(3)">
-</button>
+    <button
+        class="choice"
+        id="choice3"
+        onclick="startNegotiation()">
+    </button>
 
 </div>
 
 
+<div id="negotiation" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; align-items:center; justify-content:center; padding:20px;">
+
+    <div style="background:#171717; color:white; width:min(500px,100%); padding:25px; border-radius:18px; box-shadow:0 10px 40px rgba(0,0,0,.6); text-align:center;">
+
+        <h2>🤝 Onderhandelen</h2>
+
+        <p id="negotiationText"></p>
+
+        <input
+            id="negotiationPrice"
+            type="number"
+            min="0.10"
+            step="0.01"
+            placeholder="Jouw prijs"
+            style="width:100%; box-sizing:border-box; padding:12px; border-radius:10px; border:1px solid #555; background:#222; color:white; font-size:18px; margin:10px 0;">
+
+        <button class="choice" onclick="submitNegotiation()">🤝 Voorstel doen</button>
+
+        <button class="choice" onclick="closeNegotiation()">Annuleren</button>
+
+        <p id="negotiationResult" style="font-weight:bold; min-height:24px;"></p>
+
+    </div>
+
+</div>
+
 <div id="gameOver">
 
-<h1>💀 GAME OVER</h1>
+    <div id="gameOverBox">
 
-<p>
-Je bedrijf is failliet gegaan.
-</p>
+        <h1>💀 Game Over</h1>
 
-<p>
-Je hebt geen geld, geen producten en geen klanten meer.
-</p>
+        <p id="gameOverText">
+            Je bedrijf is failliet.
+        </p>
 
-<button onclick="location.reload()">
-🔄 Opnieuw beginnen
-</button>
+        <button onclick="location.reload()">
+            🔄 Opnieuw spelen
+        </button>
+
+    </div>
 
 </div>
 
@@ -787,95 +769,85 @@ GEBOUWEN
 
 const buildings={
 
-1:{
-name:"Kraampje",
-emoji:"🛖",
-cost:0,
-capacity:2,
-price:5,
-income:0
-},
+    1:{
+        name:"Kraampje",
+        emoji:"🛖",
+        cost:0,
+        capacity:2,
+        price:5
+    },
 
-2:{
-name:"Kleine winkel",
-emoji:"🏪",
-cost:250,
-capacity:8,
-price:10,
-income:15
-},
+    2:{
+        name:"Kleine winkel",
+        emoji:"🏪",
+        cost:250,
+        capacity:8,
+        price:10
+    },
 
-3:{
-name:"Supermarkt",
-emoji:"🏬",
-cost:1000,
-capacity:25,
-price:18,
-income:40
-},
+    3:{
+        name:"Supermarkt",
+        emoji:"🏬",
+        cost:1000,
+        capacity:25,
+        price:18
+    },
 
-4:{
-name:"Kantoor",
-emoji:"🏢",
-cost:5000,
-capacity:50,
-price:30,
-income:100
-},
+    4:{
+        name:"Kantoor",
+        emoji:"🏢",
+        cost:5000,
+        capacity:50,
+        price:30
+    },
 
-5:{
-name:"Fabriek",
-emoji:"🏭",
-cost:20000,
-capacity:100,
-price:45,
-income:300
-},
+    5:{
+        name:"Fabriek",
+        emoji:"🏭",
+        cost:20000,
+        capacity:100,
+        price:45
+    },
 
-6:{
-name:"Autofabriek",
-emoji:"🚗",
-cost:75000,
-capacity:180,
-price:75,
-income:900
-},
+    6:{
+        name:"Autofabriek",
+        emoji:"🚗",
+        cost:75000,
+        capacity:180,
+        price:75
+    },
 
-7:{
-name:"Grote fabriek",
-emoji:"🏗️",
-cost:100000,
-capacity:350,
-price:120,
-income:2000
-},
+    7:{
+        name:"Grote fabriek",
+        emoji:"🏗️",
+        cost:100000,
+        capacity:350,
+        price:120
+    },
 
-8:{
-name:"Bedrijfscentrum",
-emoji:"🏙️",
-cost:200000,
-capacity:700,
-price:200,
-income:5000
-},
+    8:{
+        name:"Bedrijfscentrum",
+        emoji:"🏙️",
+        cost:200000,
+        capacity:700,
+        price:200
+    },
 
-9:{
-name:"Hoofdkantoor",
-emoji:"🏢",
-cost:500000,
-capacity:1500,
-price:350,
-income:12000
-},
+    9:{
+        name:"Hoofdkantoor",
+        emoji:"🏢",
+        cost:500000,
+        capacity:1500,
+        price:350
+    },
 
-10:{
-name:"Megabedrijf",
-emoji:"🌆",
-cost:1000000,
-capacity:4000,
-price:600,
-income:30000
-}
+    10:{
+        name:"Megabedrijf",
+        emoji:"🌆",
+        cost:1000000,
+        capacity:4000,
+        price:600
+    }
 
 };
 
@@ -891,6 +863,8 @@ let money=500;
 let level=0;
 
 let building=null;
+
+let ownedBuildings=[];
 
 let selected=null;
 
@@ -923,6 +897,7 @@ let inflation=0;
 let supplierFactor=1;
 
 let buyPrice=BASE_PRODUCT_PRICE;
+let producerOfferPrice=BASE_PRODUCT_PRICE;
 
 let day=1;
 
@@ -940,36 +915,14 @@ let totalSalesToday=0;
 
 let dailyTax=0;
 
-let taxReduction=0;
+let gameEnded=false;
 
-
-/* =====================================================
-CONCURRENT
-===================================================== */
-
-let competitorExists=false;
-
-let competitorMoney=0;
-
-let competitorLevel=0;
-
-let competitorCustomers=0;
-
-let competitorQuality=35;
-
-let competitorPrice=6;
-
-let competitorBuildings=[];
-
-let competitorCustomerObjects=[];
-
-let competitorTimer=0;
-
-let competitorNextArrival=20+Math.floor(Math.random()*21);
-
-let competitorDefeatedTimer=0;
-
-let competitorIncomeTimer=0;
+/* CONCURRENT */
+let competitor=null;
+let competitorCustomers=[];
+let competitorNextDay=3+Math.floor(Math.random()*4);
+let competitorRespawnDay=0;
+let competitorCustomerLimit=5;
 
 
 /* =====================================================
@@ -981,62 +934,58 @@ const objects=document.getElementById("objects");
 
 function addObject(className,emoji,x,y){
 
-const el=document.createElement("div");
+    const el=document.createElement("div");
 
-el.className=className;
+    el.className=className;
 
-el.textContent=emoji;
+    el.textContent=emoji;
 
-el.style.left=x+"px";
+    el.style.left=x+"px";
 
-el.style.top=y+"px";
+    el.style.top=y+"px";
 
-objects.appendChild(el);
+    objects.appendChild(el);
 
-return el;
-
+    return el;
 }
 
 
 function createWorld(){
 
-for(let i=0;i<170;i++){
+    for(let i=0;i<170;i++){
 
-const x=100+Math.random()*5700;
+        const x=100+Math.random()*5700;
 
-const y=100+Math.random()*5700;
+        const y=100+Math.random()*5700;
 
-addObject(
-"houseWorld",
-Math.random()<.5?"🏠":"🏡",
-x,
-y
-);
-
-}
-
-
-for(let i=0;i<300;i++){
-
-const x=50+Math.random()*5800;
-
-const y=50+Math.random()*5800;
-
-addObject(
-"tree",
-"🌳",
-x,
-y
-);
-
-}
+        addObject(
+            "houseWorld",
+            Math.random()<.5?"🏠":"🏡",
+            x,
+            y
+        );
+    }
 
 
-for(let i=0;i<population;i++){
+    for(let i=0;i<300;i++){
 
-createPerson();
+        const x=50+Math.random()*5800;
 
-}
+        const y=50+Math.random()*5800;
+
+        addObject(
+            "tree",
+            "🌳",
+            x,
+            y
+        );
+    }
+
+
+    for(let i=0;i<population;i++){
+
+        createPerson();
+    }
 
 }
 
@@ -1047,35 +996,37 @@ MENSEN
 
 function createPerson(){
 
-const p={
+    const p={
 
-id:nextPerson++,
+        id:nextPerson++,
 
-x:100+Math.random()*5700,
+        x:100+Math.random()*5700,
 
-y:100+Math.random()*5700,
+        y:100+Math.random()*5700,
 
-targetX:0,
+        targetX:0,
 
-targetY:0,
+        targetY:0,
 
-element:null
+        element:null
 
-};
+    };
 
-p.targetX=p.x;
 
-p.targetY=p.y;
+    p.targetX=p.x;
 
-p.element=addObject(
-"person",
-Math.random()<.5?"👨":"👩",
-p.x,
-p.y
-);
+    p.targetY=p.y;
 
-people.push(p);
 
+    p.element=addObject(
+        "person",
+        Math.random()<.5?"👨":"👩",
+        p.x,
+        p.y
+    );
+
+
+    people.push(p);
 }
 
 
@@ -1085,52 +1036,162 @@ PERSONEN BEWEGEN
 
 function updatePeople(){
 
-if(paused)return;
+    if(paused || gameEnded) return;
 
-for(const p of people){
 
-if(Math.random()<.008){
+    for(const p of people){
 
-p.targetX=Math.max(
-30,
-Math.min(
-5970,
-p.x+Math.random()*800-400
-)
-);
+        if(Math.random()<.008){
 
-p.targetY=Math.max(
-30,
-Math.min(
-5970,
-p.y+Math.random()*800-400
-)
-);
+            p.targetX=Math.max(
+                30,
+                Math.min(
+                    5970,
+                    p.x+Math.random()*800-400
+                )
+            );
+
+            p.targetY=Math.max(
+                30,
+                Math.min(
+                    5970,
+                    p.y+Math.random()*800-400
+                )
+            );
+        }
+
+
+        const dx=p.targetX-p.x;
+
+        const dy=p.targetY-p.y;
+
+        const distance=Math.sqrt(
+            dx*dx+dy*dy
+        );
+
+
+        if(distance>5){
+
+            p.x+=dx/distance*.25*gameSpeed;
+
+            p.y+=dy/distance*.25*gameSpeed;
+        }
+
+
+        p.element.style.left=p.x+"px";
+
+        p.element.style.top=p.y+"px";
+    }
 
 }
 
-const dx=p.targetX-p.x;
 
-const dy=p.targetY-p.y;
-
-const distance=Math.sqrt(dx*dx+dy*dy);
-
-if(distance>5){
-
-p.x+=dx/distance*.25*gameSpeed;
-
-p.y+=dy/distance*.25*gameSpeed;
-
+/* =====================================================
+CONCURRENT
+===================================================== */
+function competitorCanWinCustomer(){
+    if(!competitor) return false;
+    if(quality>competitor.quality && price>competitor.price) return true;
+    return demand>=55 && stock>0 && price<=competitor.price*1.15;
 }
 
-p.element.style.left=p.x+"px";
-
-p.element.style.top=p.y+"px";
-
+function spawnCompetitor(){
+    if(competitor || !building || gameEnded) return;
+    const angle=Math.random()*Math.PI*2;
+    const distance=450+Math.random()*300;
+    competitor={
+        x:Math.max(100,Math.min(5900,building.x+Math.cos(angle)*distance)),
+        y:Math.max(100,Math.min(5900,building.y+Math.sin(angle)*distance)),
+        money:Math.max(150,Math.min(1000,money*.7+200)),
+        price:Math.max(.5,price*(.75+Math.random()*.2)),
+        quality:Math.max(15,Math.min(90,quality*(.65+Math.random()*.25))),
+        element:null
+    };
+    const el=document.createElement("div");
+    el.className="competitorBuilding";
+    el.style.left=(competitor.x-35)+"px";
+    el.style.top=(competitor.y-45)+"px";
+    el.innerHTML="🏪<span>Concurrent</span>";
+    objects.appendChild(el);
+    competitor.element=el;
+    document.getElementById("competitorBox").style.display="block";
+    log("⚔️ Er is een concurrent in de buurt gekomen!");
 }
 
+function removeCompetitor(){
+    if(!competitor) return;
+    if(competitor.element) competitor.element.remove();
+    for(const c of competitorCustomers){if(c.element)c.element.remove();}
+    competitorCustomers=[];
+    competitor=null;
+    competitorCustomerLimit=5;
+    competitorRespawnDay=day+2+Math.floor(Math.random()*6);
+    document.getElementById("competitorBox").style.display="none";
+    log("🏆 De concurrent is verslagen! Een nieuwe concurrent kan later verschijnen.");
 }
 
+function spawnCompetitorCustomer(){
+    if(!competitor || paused || gameEnded || !population) return;
+    const maxCustomers=Math.min(competitorCustomerLimit,Math.max(2,Math.floor(population*.12)));
+    if(competitorCustomers.length>=maxCustomers) return;
+    let chance=.002*gameSpeed;
+    if(stock<=0 || demand<35) chance=.012*gameSpeed;
+    else if(demand<55) chance=.007*gameSpeed;
+    if(competitorCanWinCustomer()) chance*=.45;
+    if(Math.random()>=chance) return;
+    const angle=Math.random()*Math.PI*2;
+    const distance=250+Math.random()*650;
+    const c={x:competitor.x+Math.cos(angle)*distance,y:competitor.y+Math.sin(angle)*distance,targetX:competitor.x,targetY:competitor.y,state:"going",element:null};
+    c.element=addObject("competitorCustomer",Math.random()<.5?"👨":"👩",c.x,c.y);
+    competitorCustomers.push(c);
+}
+
+function updateCompetitorCustomers(){
+    if(paused || gameEnded || !competitor) return;
+    for(let i=competitorCustomers.length-1;i>=0;i--){
+        const c=competitorCustomers[i];
+        const dx=c.targetX-c.x,dy=c.targetY-c.y;
+        const distance=Math.sqrt(dx*dx+dy*dy);
+        if(c.state==="going"){
+            if(distance<8){
+                competitor.money+=Math.max(.5,competitor.price);
+                c.state="leaving";
+                c.targetX=c.x+Math.random()*500-250;
+                c.targetY=c.y+Math.random()*500-250;
+            }else{
+                c.x+=dx/distance*.75*gameSpeed;
+                c.y+=dy/distance*.75*gameSpeed;
+            }
+        }else{
+            if(distance<10){c.element.remove();competitorCustomers.splice(i,1);continue;}
+            c.x+=dx/distance*.75*gameSpeed;
+            c.y+=dy/distance*.75*gameSpeed;
+        }
+        c.element.style.left=c.x+"px";
+        c.element.style.top=c.y+"px";
+    }
+    if(competitor && competitor.money<=0) removeCompetitor();
+}
+
+function updateCompetitor(){
+    if(gameEnded || !building) return;
+    if(!competitor){
+        if(day>=competitorNextDay || (competitorRespawnDay>0 && day>=competitorRespawnDay)) spawnCompetitor();
+        return;
+    }
+    if(competitorCanWinCustomer() && competitorCustomers.length>0 && Math.random()<.01*gameSpeed){
+        const c=competitorCustomers.pop();
+        if(c && c.element)c.element.remove();
+    }
+
+    /* De concurrent heeft iedere dag kosten. Zo kan hij uiteindelijk
+       blut raken en later door een nieuwe concurrent worden vervangen. */
+    competitor.money-=20+Math.random()*30;
+
+    competitorCustomerLimit=Math.min(20,competitorCustomerLimit+1);
+
+    if(competitor.money<=0) removeCompetitor();
+}
 
 /* =====================================================
 GEBOUW SELECTEREN
@@ -1138,46 +1199,51 @@ GEBOUW SELECTEREN
 
 function selectBuilding(n){
 
-const b=buildings[n];
+    const b=buildings[n];
 
-if(!building && n!==1){
 
-log("🔒 Begin eerst met je gratis kraampje.");
+    if(!building && n!==1){
 
-return;
+        log(
+            "🔒 Begin eerst met je gratis kraampje."
+        );
 
-}
+        return;
+    }
 
-if(building && n===level+1){
 
-if(money<b.cost){
+    if(building && n===level+1){
 
-log(
-"❌ Je hebt €"+
-money.toFixed(2)+
-", maar €"+
-b.cost.toLocaleString("nl-NL")+
-" nodig."
-);
+        if(money<b.cost){
 
-return;
+            log(
+                "❌ Je hebt €"+
+                money.toFixed(2)+
+                ", maar €"+
+                b.cost.toLocaleString("nl-NL")+
+                " nodig."
+            );
 
-}
+            return;
+        }
+    }
 
-}
 
-selected=n;
+    selected=n;
 
-document
-.querySelectorAll(".buildBtn")
-.forEach(x=>x.classList.remove("selected"));
 
-document
-.getElementById("b"+n)
-.classList.add("selected");
+    document
+        .querySelectorAll(".buildBtn")
+        .forEach(x=>x.classList.remove("selected"));
 
-document.getElementById("message").style.display="block";
 
+    document
+        .getElementById("b"+n)
+        .classList.add("selected");
+
+
+    document.getElementById("message")
+        .style.display="block";
 }
 
 
@@ -1185,23 +1251,33 @@ document.getElementById("message").style.display="block";
 KAART KLIKKEN
 ===================================================== */
 
-document
-.getElementById("map")
-.addEventListener("click",function(e){
+document.getElementById("map").addEventListener(
+    "click",
+    function(e){
 
-if(selected===null)return;
+        if(didDrag){
+            didDrag=false;
+            return;
+        }
 
-const rect=
-document.getElementById("map")
-.getBoundingClientRect();
+        if(selected===null || gameEnded) return;
 
-const x=(e.clientX-rect.left)/zoomLevel;
 
-const y=(e.clientY-rect.top)/zoomLevel;
+        const rect=document
+            .getElementById("map")
+            .getBoundingClientRect();
 
-build(selected,x,y);
 
-});
+        // Zet de muispositie om naar de echte wereldpositie.
+        // Dit houdt rekening met zowel slepen als zoomen.
+        const x=(e.clientX-rect.left-panX)/zoomLevel;
+
+        const y=(e.clientY-rect.top-panY)/zoomLevel;
+
+
+        build(selected,x,y);
+    }
+);
 
 
 /* =====================================================
@@ -1210,105 +1286,138 @@ BOUWEN
 
 function build(n,x,y){
 
-const b=buildings[n];
+    const b=buildings[n];
 
-let cost=b.cost;
-
-if(!building && n===1){
-
-cost=0;
-
-}
-
-if(money<cost){
-
-log("❌ Niet genoeg geld.");
-
-return;
-
-}
-
-money-=cost;
+    let cost=b.cost;
 
 
-if(!building){
+    if(!building && n===1){
 
-level=1;
+        cost=0;
+    }
 
-building={
-x:x,
-y:y,
-level:1,
-element:null
-};
 
-createBuilding(building);
+    if(money<cost){
 
-price=5;
+        log("❌ Niet genoeg geld.");
 
-stockCapacity=30;
+        return;
+    }
 
-setupSlider();
 
-log("🎉 Je gratis kraampje is gebouwd!");
+    money-=cost;
 
-}
 
-else if(n===level+1){
+    if(!building){
 
-level=n;
+        level=1;
 
-building.level=n;
+        building={
+            x:x,
+            y:y,
+            level:1,
+            element:null
+        };
 
-if(building.element){
 
-building.element.remove();
+        ownedBuildings.push({
+            x:x,
+            y:y,
+            level:1,
+            element:null
+        });
 
-}
 
-createBuilding(building);
+        createBuilding(building);
 
-stockCapacity=buildings[n].capacity*15;
 
-price=buildings[n].price;
+        price=5;
 
-setupSlider();
+        stockCapacity=30;
 
-log(
-"⬆️ Je bedrijf is nu "+
-buildings[n].name+
-"!"
-);
+        setupSlider();
 
-}
 
-else{
+        log(
+            "🎉 Je gratis kraampje is gebouwd!"
+        );
 
-const extra={
-x:x,
-y:y,
-level:n,
-element:null
-};
+    }
 
-createBuilding(extra);
 
-log(
-"🏗️ Extra "+
-b.name+
-" gebouwd."
-);
+    else if(n===level+1){
 
-}
+        level=n;
 
-selected=null;
+        building.level=n;
 
-document
-.querySelectorAll(".buildBtn")
-.forEach(x=>x.classList.remove("selected"));
 
-document.getElementById("message").style.display="none";
+        if(building.element){
 
+            building.element.remove();
+        }
+
+
+        ownedBuildings[0].level=n;
+
+        createBuilding(building);
+
+
+        stockCapacity=
+            buildings[n].capacity*15;
+
+
+        price=buildings[n].price;
+
+        setupSlider();
+
+
+        log(
+            "⬆️ Je bedrijf is nu "+
+            buildings[n].name+
+            "!"
+        );
+
+    }
+
+
+    else{
+
+        const extra={
+
+            x:x,
+
+            y:y,
+
+            level:n,
+
+            element:null
+        };
+
+
+        ownedBuildings.push(extra);
+
+        createBuilding(extra);
+
+
+        log(
+            "🏗️ Extra "+
+            b.name+
+            " gebouwd."
+        );
+    }
+
+
+    selected=null;
+
+
+    document
+        .querySelectorAll(".buildBtn")
+        .forEach(x=>x.classList.remove("selected"));
+
+
+    document.getElementById("message")
+        .style.display="none";
 }
 
 
@@ -1318,26 +1427,48 @@ GEBOUW TEKENEN
 
 function createBuilding(data){
 
-const b=buildings[data.level];
+    const b=buildings[data.level];
 
-const el=document.createElement("div");
 
-el.className="building";
+    const el=document.createElement("div");
 
-el.style.left=(data.x-35)+"px";
+    el.className="building";
 
-el.style.top=(data.y-45)+"px";
+    el.style.left=(data.x-35)+"px";
 
-el.innerHTML=
-b.emoji+
-"<span>"+
-b.name+
-"</span>";
+    el.style.top=(data.y-45)+"px";
 
-objects.appendChild(el);
 
-data.element=el;
+    el.innerHTML=
+        b.emoji+
+        "<span>"+
+        b.name+
+        "</span>";
 
+
+    objects.appendChild(el);
+
+
+    data.element=el;
+}
+
+
+/* =====================================================
+TOTALE KLANTCAPACITEIT
+===================================================== */
+
+function getTotalCustomerCapacity(){
+
+    let total=0;
+
+
+    for(const b of ownedBuildings){
+
+        total+=buildings[b.level].capacity;
+    }
+
+
+    return total;
 }
 
 
@@ -1347,28 +1478,32 @@ PRIJS
 
 function setupSlider(){
 
-const slider=
-document.getElementById("priceSlider");
+    const slider=
+        document.getElementById("priceSlider");
 
-slider.value=
-Math.min(price,Number(slider.max));
 
-changePrice();
+    slider.value=Math.min(
+        price,
+        Number(slider.max)
+    );
 
+
+    changePrice();
 }
 
 
 function changePrice(){
 
-price=Number(
-document.getElementById("priceSlider").value
-);
+    price=Number(
+        document.getElementById("priceSlider").value
+    );
 
-document.getElementById("sliderPrice").textContent=
-price.toFixed(2);
 
-calculateDemand();
+    document.getElementById("sliderPrice")
+        .textContent=price.toFixed(2);
 
+
+    calculateDemand();
 }
 
 
@@ -1378,98 +1513,121 @@ VRAAG
 
 function calculateDemand(){
 
-if(!building){
+    if(!building){
 
-demand=0;
+        demand=0;
 
-return;
+        return;
+    }
 
-}
 
-const reference=
-buildings[building.level].price;
+    const reference=
+        buildings[building.level].price;
 
-let priceEffect=
-100*(reference/price);
 
-demand=
-priceEffect+
-quality*.4+
-advertising*.7+
-reputation*.25-
-80+
-demandModifier;
+    let priceEffect=
+        100*(reference/price);
 
-demand=
-Math.max(
-0,
-Math.min(
-100,
-demand
-)
-);
 
+    demand=
+        priceEffect+
+        quality*.4+
+        advertising*.7+
+        reputation*.25-
+        80+
+        demandModifier;
+
+
+    demand=Math.max(
+        0,
+        Math.min(100,demand)
+    );
 }
 
 
 /* =====================================================
-KLANTEN
+KLANTEN SPAWNEN BIJ ALLE GEBOUWEN
 ===================================================== */
 
 function spawnCustomers(){
 
-if(
-paused||
-!building||
-stock<=0
-)return;
+    if(
+        paused ||
+        gameEnded ||
+        !building ||
+        stock<=0 ||
+        ownedBuildings.length===0
+    ){
 
-const capacity=
-buildings[building.level].capacity;
+        return;
+    }
 
-if(customers.length>=capacity)
-return;
 
-const chance=
-demand/100*.08*gameSpeed;
+    const totalCapacity=
+        getTotalCustomerCapacity();
 
-if(Math.random()<chance){
 
-const angle=
-Math.random()*Math.PI*2;
+    if(customers.length>=totalCapacity){
 
-const distance=
-300+Math.random()*800;
+        return;
+    }
 
-const c={
 
-x:building.x+
-Math.cos(angle)*distance,
+    const chance=
+        demand/100*.08*gameSpeed;
 
-y:building.y+
-Math.sin(angle)*distance,
 
-targetX:building.x,
+    if(Math.random()<chance){
 
-targetY:building.y,
+        const chosenBuilding=
+            ownedBuildings[
+                Math.floor(
+                    Math.random()*
+                    ownedBuildings.length
+                )
+            ];
 
-state:"going",
 
-element:null
+        const angle=
+            Math.random()*Math.PI*2;
 
-};
 
-c.element=addObject(
-"customer",
-Math.random()<.5?"👨":"👩",
-c.x,
-c.y
-);
+        const distance=
+            300+Math.random()*800;
 
-customers.push(c);
 
-}
+        const c={
 
+            x:
+                chosenBuilding.x+
+                Math.cos(angle)*distance,
+
+            y:
+                chosenBuilding.y+
+                Math.sin(angle)*distance,
+
+            targetX:chosenBuilding.x,
+
+            targetY:chosenBuilding.y,
+
+            state:"going",
+
+            building:chosenBuilding,
+
+            element:null
+        };
+
+
+        c.element=addObject(
+            "customer",
+            Math.random()<.5?"👨":"👩",
+            c.x,
+            c.y
+        );
+
+
+        customers.push(c);
+    }
 }
 
 
@@ -1479,96 +1637,115 @@ KLANTEN BEWEGEN
 
 function updateCustomers(){
 
-if(paused)return;
+    if(paused || gameEnded) return;
 
-for(
-let i=customers.length-1;
-i>=0;
-i--
-){
 
-const c=customers[i];
+    for(
+        let i=customers.length-1;
+        i>=0;
+        i--
+    ){
 
-const dx=c.targetX-c.x;
+        const c=customers[i];
 
-const dy=c.targetY-c.y;
 
-const distance=Math.sqrt(
-dx*dx+dy*dy
-);
+        const dx=c.targetX-c.x;
 
-if(c.state==="going"){
+        const dy=c.targetY-c.y;
 
-if(distance<8){
 
-if(stock>0){
+        const distance=
+            Math.sqrt(dx*dx+dy*dy);
 
-stock--;
 
-money+=price;
+        if(c.state==="going"){
 
-totalSalesToday+=price;
+            if(distance<8){
 
-reputation=
-Math.min(
-100,
-reputation+.05
-);
+                if(stock>0 && (demand>=35 || !competitor || competitorCanWinCustomer())){
 
-}
+                    stock--;
 
-c.state="leaving";
+                    money+=price;
 
-c.targetX=
-c.x+
-Math.random()*500-
-250;
+                    totalSalesToday+=price;
 
-c.targetY=
-c.y+
-Math.random()*500-
-250;
+                    reputation=
+                        Math.min(
+                            100,
+                            reputation+.05
+                        );
+                }else if(competitor){
+                    c.targetX=competitor.x;
+                    c.targetY=competitor.y;
+                    c.state="going";
+                    competitorCustomers.push(c);
+                    customers.splice(i,1);
+                    continue;
+                }
 
-}
 
-else{
+                c.state="leaving";
 
-c.x+=
-dx/distance*.8*gameSpeed;
 
-c.y+=
-dy/distance*.8*gameSpeed;
+                c.targetX=
+                    c.x+
+                    Math.random()*500-
+                    250;
 
-}
 
-}
+                c.targetY=
+                    c.y+
+                    Math.random()*500-
+                    250;
 
-else{
+            }
 
-if(distance<10){
+            else{
 
-c.element.remove();
+                c.x+=
+                    dx/distance*
+                    .8*
+                    gameSpeed;
 
-customers.splice(i,1);
+                c.y+=
+                    dy/distance*
+                    .8*
+                    gameSpeed;
+            }
 
-continue;
+        }
 
-}
+        else{
 
-c.x+=
-dx/distance*.8*gameSpeed;
+            if(distance<10){
 
-c.y+=
-dy/distance*.8*gameSpeed;
+                c.element.remove();
 
-}
+                customers.splice(i,1);
 
-c.element.style.left=c.x+"px";
+                continue;
+            }
 
-c.element.style.top=c.y+"px";
 
-}
+            c.x+=
+                dx/distance*
+                .8*
+                gameSpeed;
 
+            c.y+=
+                dy/distance*
+                .8*
+                gameSpeed;
+        }
+
+
+        c.element.style.left=
+            c.x+"px";
+
+        c.element.style.top=
+            c.y+"px";
+    }
 }
 
 
@@ -1578,16 +1755,18 @@ INKOOPPRIJS
 
 function calculateBuyPrice(){
 
-buyPrice=
-BASE_PRODUCT_PRICE*
-(1+inflation/100)*
-supplierFactor;
+    buyPrice=
+        BASE_PRODUCT_PRICE*
+        (1+inflation/100)*
+        supplierFactor;
 
-buyPrice=Math.max(.10,buyPrice);
 
-buyPrice=
-Number(buyPrice.toFixed(2));
+    buyPrice=
+        Math.max(.10,buyPrice);
 
+
+    buyPrice=
+        Number(buyPrice.toFixed(2));
 }
 
 
@@ -1597,78 +1776,83 @@ PRODUCTEN
 
 function updateProductPrices(){
 
-const box=
-document.getElementById("productPrices");
+    const box=
+        document.getElementById("productPrices");
 
-box.innerHTML=`
 
-<div class="product">
+    box.innerHTML=`
 
-<span class="product-name">
-📦 Product
-</span>
+        <div class="product">
 
-<span class="product-price">
-€${buyPrice.toFixed(2)}
-</span>
+            <span class="product-name">
+                📦 Product
+            </span>
 
-<div style="clear:both"></div>
+            <span class="product-price">
+                €${buyPrice.toFixed(2)}
+            </span>
 
-<small>
-Huidige inkoopprijs
-</small>
+            <div style="clear:both"></div>
 
-</div>
+            <small>
+                Huidige inkoopprijs
+            </small>
 
-`;
+        </div>
 
+    `;
 }
 
 
 function buyProducts(amount){
 
-if(!building){
+    if(!building){
 
-log("❌ Je hebt nog geen bedrijf.");
+        log(
+            "❌ Je hebt nog geen bedrijf."
+        );
 
-return;
+        return;
+    }
 
-}
 
-if(stock+amount>stockCapacity){
+    if(stock+amount>stockCapacity){
 
-log("📦 Niet genoeg opslagruimte.");
+        log(
+            "📦 Niet genoeg opslagruimte."
+        );
 
-return;
+        return;
+    }
 
-}
 
-const total=
-amount*buyPrice;
+    const total=
+        amount*buyPrice;
 
-if(money<total){
 
-log(
-"❌ Je hebt €"+
-total.toFixed(2)+
-" nodig."
-);
+    if(money<total){
 
-return;
+        log(
+            "❌ Je hebt €"+
+            total.toFixed(2)+
+            " nodig."
+        );
 
-}
+        return;
+    }
 
-money-=total;
 
-stock+=amount;
+    money-=total;
 
-log(
-"🛒 "+
-amount+
-" producten gekocht voor €"+
-total.toFixed(2)
-);
+    stock+=amount;
 
+
+    log(
+        "🛒 "+
+        amount+
+        " producten gekocht voor €"+
+        total.toFixed(2)
+    );
 }
 
 
@@ -1678,20 +1862,24 @@ OPSLAG
 
 function upgradeStorage(){
 
-if(money<500){
+    if(money<500){
 
-log("❌ Je hebt €500 nodig.");
+        log(
+            "❌ Je hebt €500 nodig."
+        );
 
-return;
+        return;
+    }
 
-}
 
-money-=500;
+    money-=500;
 
-stockCapacity+=50;
+    stockCapacity+=50;
 
-log("📦 Opslag +50.");
 
+    log(
+        "📦 Opslag +50."
+    );
 }
 
 
@@ -1701,32 +1889,36 @@ RECLAME
 
 function advertise(){
 
-if(money<500){
+    if(money<500){
 
-log("❌ Je hebt €500 nodig.");
+        log(
+            "❌ Je hebt €500 nodig."
+        );
 
-return;
+        return;
+    }
 
-}
 
-money-=500;
+    money-=500;
 
-advertising=
-Math.min(
-100,
-advertising+15
-);
 
-reputation=
-Math.min(
-100,
-reputation+2
-);
+    advertising=
+        Math.min(
+            100,
+            advertising+15
+        );
 
-log(
-"📢 Reclame verhoogt de vraag."
-);
 
+    reputation=
+        Math.min(
+            100,
+            reputation+2
+        );
+
+
+    log(
+        "📢 Reclame verhoogt de vraag."
+    );
 }
 
 
@@ -1736,32 +1928,36 @@ KWALITEIT
 
 function upgradeQuality(){
 
-if(money<1000){
+    if(money<1000){
 
-log("❌ Je hebt €1.000 nodig.");
+        log(
+            "❌ Je hebt €1.000 nodig."
+        );
 
-return;
+        return;
+    }
 
-}
 
-money-=1000;
+    money-=1000;
 
-quality=
-Math.min(
-100,
-quality+10
-);
 
-reputation=
-Math.min(
-100,
-reputation+5
-);
+    quality=
+        Math.min(
+            100,
+            quality+10
+        );
 
-log(
-"⭐ Productkwaliteit verbeterd."
-);
 
+    reputation=
+        Math.min(
+            100,
+            reputation+5
+        );
+
+
+    log(
+        "⭐ Productkwaliteit verbeterd."
+    );
 }
 
 
@@ -1771,120 +1967,107 @@ BELASTING
 
 function getTax(){
 
-let remaining=
-Math.max(0,money);
+    let remaining=
+        Math.max(0,money);
 
-let tax=0;
 
-const brackets=[
+    let tax=0;
 
-{limit:1000,rate:0},
 
-{limit:5000,rate:.05},
+    const brackets=[
 
-{limit:25000,rate:.10},
+        {
+            limit:1000,
+            rate:0
+        },
 
-{limit:100000,rate:.15},
+        {
+            limit:5000,
+            rate:.05
+        },
 
-{limit:500000,rate:.20},
+        {
+            limit:25000,
+            rate:.10
+        },
 
-{limit:2000000,rate:.25},
+        {
+            limit:100000,
+            rate:.15
+        },
 
-{limit:10000000,rate:.30},
+        {
+            limit:500000,
+            rate:.20
+        },
 
-{limit:Infinity,rate:.35}
+        {
+            limit:2000000,
+            rate:.25
+        },
 
-];
+        {
+            limit:10000000,
+            rate:.30
+        },
 
-let previous=0;
+        {
+            limit:Infinity,
+            rate:.35
+        }
 
-for(const bracket of brackets){
+    ];
 
-if(remaining<=previous)
-break;
 
-const taxable=
-Math.min(
-remaining,
-bracket.limit
-)-previous;
+    let previous=0;
 
-if(taxable>0){
 
-let rate=
-Math.max(
-0,
-bracket.rate-taxReduction
-);
+    for(const bracket of brackets){
 
-tax+=taxable*rate;
+        if(remaining<=previous) break;
 
-}
 
-previous=bracket.limit;
+        const taxable=
+            Math.min(
+                remaining,
+                bracket.limit
+            )-
+            previous;
 
-}
 
-return tax;
+        if(taxable>0){
 
+            tax+=
+                taxable*
+                bracket.rate;
+        }
+
+
+        previous=bracket.limit;
+    }
+
+
+    return tax;
 }
 
 
 function getTaxRate(){
 
-if(money<=1000)return 0;
+    if(money<=1000) return 0;
 
-if(money<=5000)
-return Math.max(0,5-taxReduction*100);
+    if(money<=5000) return 5;
 
-if(money<=25000)
-return Math.max(0,10-taxReduction*100);
+    if(money<=25000) return 10;
 
-if(money<=100000)
-return Math.max(0,15-taxReduction*100);
+    if(money<=100000) return 15;
 
-if(money<=500000)
-return Math.max(0,20-taxReduction*100);
+    if(money<=500000) return 20;
 
-if(money<=2000000)
-return Math.max(0,25-taxReduction*100);
+    if(money<=2000000) return 25;
 
-if(money<=10000000)
-return Math.max(0,30-taxReduction*100);
+    if(money<=10000000) return 30;
 
-return Math.max(0,35-taxReduction*100);
-
-}
-
-
-/* =====================================================
-BELASTING VERLAGEN
-===================================================== */
-
-function lowerTaxes(){
-
-if(money<10000){
-
-log(
-"❌ Je hebt €10.000 nodig om belasting te verlagen."
-);
-
-return;
-
-}
-
-money-=10000;
-
-taxReduction=
-Math.min(
-.05,
-taxReduction+.01
-);
-
-log(
-"🧾 De belastingtarieven zijn met 1 procentpunt verlaagd."
-);
-
+    return 35;
 }
 
 
@@ -1894,94 +2077,108 @@ BELASTING UI
 
 function updateTax(){
 
-dailyTax=getTax();
+    dailyTax=getTax();
 
-const rate=getTaxRate();
 
-document.getElementById("taxRate").textContent=
-rate.toFixed(0);
+    const rate=getTaxRate();
 
-document.getElementById("taxPreview").textContent=
-dailyTax.toFixed(2);
 
-let explanation="";
+    document.getElementById("taxRate")
+        .textContent=rate;
 
-if(rate===0){
 
-explanation=
-"Je betaalt momenteel geen belasting.";
+    document.getElementById("taxPreview")
+        .textContent=
+        dailyTax.toFixed(2);
 
-}
 
-else{
+    let explanation="";
 
-explanation=
-"Je geschatte belasting is €"+
-dailyTax.toFixed(2)+
-".";
 
-}
+    if(rate===0){
 
-document.getElementById("taxInfo").innerHTML=`
+        explanation=
+            "Je betaalt momenteel geen belasting.";
+    }
 
-<div>
-<b>Huidig tarief: ${rate.toFixed(0)}%</b>
-</div>
+    else{
 
-<br>
+        explanation=
+            "Je geschatte belasting is €"+
+            dailyTax.toFixed(2)+
+            " per belastingdag.";
+    }
 
-<div>
-${explanation}
-</div>
 
-<br>
+    document.getElementById("taxInfo")
+        .innerHTML=`
 
-<small>
-Belasting wordt elke 2 dagen betaald.
-</small>
+            <div>
+                <b>Huidig tarief: ${rate}%</b>
+            </div>
 
-`;
+            <br>
 
+            <div>
+                ${explanation}
+            </div>
+
+            <br>
+
+            <small>
+                Meer geld betekent dat je in hogere
+                belastingtarieven terechtkomt.
+                Belasting wordt elke 2 dagen betaald.
+            </small>
+        `;
 }
 
 
 /* =====================================================
-BELASTING BETALEN
+BELASTING ELKE 2 DAGEN
 ===================================================== */
 
 function payTaxes(){
 
-if(!building)
-return;
+    if(!building) return;
 
-const tax=getTax();
 
-if(tax<=0){
+    const tax=getTax();
 
-log("🧾 Geen belasting vandaag.");
 
-return;
+    if(tax<=0){
 
-}
+        log(
+            "🧾 Geen belasting vandaag."
+        );
 
-const actualTax=
-Math.min(money,tax);
+        return;
+    }
 
-money-=actualTax;
 
-log(
-"🧾 Belasting betaald: €"+
-actualTax.toFixed(2)
-);
+    const actualTax=
+        Math.min(money,tax);
 
-showEconomicPopup(
-"🧾 Belasting",
-"De overheid heeft vandaag belasting geheven.",
-"Je betaalde €"+
-actualTax.toFixed(2)+
-"."
-);
 
+    money-=actualTax;
+
+
+    log(
+        "🧾 Belasting betaald: €"+
+        actualTax.toFixed(2)+
+        " ("+
+        getTaxRate()+
+        "%)"
+    );
+
+
+    showEconomicPopup(
+        "🧾 Belasting",
+        "De overheid heeft vandaag belasting geheven.",
+        "Je betaalde €"+
+        actualTax.toFixed(2)+
+        "."
+    );
 }
 
 
@@ -1991,278 +2188,244 @@ PRODUCENT POPUP
 
 function showProducerChoice(){
 
-if(!building||paused)
-return;
+    if(
+        !building ||
+        paused ||
+        gameEnded
+    ) return;
 
-choices=[
+    // De producent noemt eerst zijn prijs.
+    producerOfferPrice=Math.max(
+        0.10,
+        buyPrice*(0.95+Math.random()*0.15)
+    );
 
-function(){
+    producerOfferPrice=
+        Number(producerOfferPrice.toFixed(2));
 
-const change=
-1.10+
-Math.random()*.35;
+    choices=[
 
-supplierFactor*=change;
+        function(){
 
-supplierFactor=
-Math.min(10,supplierFactor);
+            const change=
+                1.10+
+                Math.random()*.35;
 
-calculateBuyPrice();
+            supplierFactor*=change;
 
-log(
-"🏭 Producent verhoogt de prijs met "+
-Math.round((change-1)*100)+
-"%."
-);
+            supplierFactor=
+                Math.min(10,supplierFactor);
 
-showEconomicPopup(
-"📈 Producent verhoogt prijs",
-"De producent heeft zijn prijs flink verhoogd.",
-"Nieuwe inkoopprijs: €"+
-buyPrice.toFixed(2)
-);
+            calculateBuyPrice();
 
-},
+            log(
+                "🏭 Producent verhoogt de prijs met "+
+                Math.round((change-1)*100)+
+                "%."
+            );
 
-function(){
+            showEconomicPopup(
+                "📈 Producent verhoogt prijs",
+                "De producent heeft zijn prijs flink verhoogd.",
+                "Nieuwe inkoopprijs: €"+
+                buyPrice.toFixed(2)
+            );
+        },
 
-showNegotiation();
+        function(){
 
-},
+            const change=
+                1.03+
+                Math.random()*.12;
 
-function(){
+            supplierFactor*=change;
 
-findOtherProducer();
+            calculateBuyPrice();
 
-},
+            log(
+                "🏭 Producent verhoogt de prijs een beetje."
+            );
 
-function(){
+            showEconomicPopup(
+                "📈 Prijs omhoog",
+                "De producent verhoogt zijn prijs.",
+                "Nieuwe inkoopprijs: €"+
+                buyPrice.toFixed(2)
+            );
+        },
 
-const change=
-1.03+
-Math.random()*.12;
+        function(){
 
-supplierFactor*=change;
+            const change=
+                .70+
+                Math.random()*.60;
 
-calculateBuyPrice();
+            supplierFactor*=change;
 
-log(
-"🏭 Producent verhoogt de prijs een beetje."
-);
+            supplierFactor=
+                Math.max(.25,supplierFactor);
 
-showEconomicPopup(
-"📈 Prijs omhoog",
-"De producent verhoogt zijn prijs.",
-"Nieuwe inkoopprijs: €"+
-buyPrice.toFixed(2)
-);
+            calculateBuyPrice();
 
+            if(change<1){
+
+                log(
+                    "📉 Je hebt een goedkopere producent gevonden."
+                );
+
+                showEconomicPopup(
+                    "📉 Goedkopere producent",
+                    "Je hebt een goedkopere producent gevonden.",
+                    "Nieuwe inkoopprijs: €"+
+                    buyPrice.toFixed(2)
+                );
+
+            }else{
+
+                log(
+                    "📈 De nieuwe producent blijkt duurder te zijn."
+                );
+
+                showEconomicPopup(
+                    "📈 Duurdere producent",
+                    "De andere producent blijkt onverwacht duurder te zijn.",
+                    "Nieuwe inkoopprijs: €"+
+                    buyPrice.toFixed(2)
+                );
+            }
+        }
+    ];
+
+    document.getElementById("choiceTitle")
+        .textContent="🏭 Producent";
+
+    document.getElementById("choiceText")
+        .textContent=
+        "De producent zegt: ik wil €"+
+        producerOfferPrice.toFixed(2)+
+        " per product. Wat doe je?";
+
+    document.getElementById("choice0")
+        .textContent=
+        "📈 Grote prijsstijging accepteren";
+
+    document.getElementById("choice1")
+        .textContent=
+        "📈 Kleine prijsstijging accepteren";
+
+    document.getElementById("choice2")
+        .textContent=
+        "🔎 Andere producent zoeken";
+
+    document.getElementById("choice3")
+        .textContent=
+        "🤝 Onderhandelen";
+
+    document.getElementById("choice")
+        .style.display="block";
 }
 
-];
+function startNegotiation(){
 
-document.getElementById("choiceTitle").textContent=
-"🏭 Producent";
+    document.getElementById("choice")
+        .style.display="none";
 
-document.getElementById("choiceText").textContent=
-"Je producent wil zijn prijzen verhogen. Wat doe je?";
+    document.getElementById("negotiationText")
+        .textContent=
+        "De producent vraagt €"+
+        producerOfferPrice.toFixed(2)+
+        " per product. Welke prijs bied je?";
 
-document.getElementById("choice0").textContent=
-"📈 Grote prijsstijging accepteren";
+    document.getElementById("negotiationPrice")
+        .value=buyPrice.toFixed(2);
 
-document.getElementById("choice1").textContent=
-"🤝 Onderhandelen";
+    document.getElementById("negotiationResult")
+        .textContent="";
 
-document.getElementById("choice2").textContent=
-"🔎 Andere producent zoeken";
+    document.getElementById("negotiation")
+        .style.display="flex";
 
-document.getElementById("choice3").textContent=
-"📈 Kleine prijsstijging accepteren";
-
-document.getElementById("choice").style.display=
-"block";
-
+    setTimeout(()=>{
+        document.getElementById("negotiationPrice").focus();
+    },50);
 }
 
+function closeNegotiation(){
 
-/* =====================================================
-ONDERHANDELEN
-===================================================== */
+    document.getElementById("negotiation")
+        .style.display="none";
 
-function showNegotiation(){
-
-const minimum=
-Math.max(
-0.10,
-buyPrice*
-(0.75+Math.random()*.15)
-);
-
-const input=
-prompt(
-"🤝 Onderhandelen\n\n"+
-"De producent vraagt €"+
-buyPrice.toFixed(2)+
-" per product.\n\n"+
-"Minimaal accepteert hij ongeveer €"+
-minimum.toFixed(2)+
-".\n\n"+
-"Voer jouw prijs in:"
-);
-
-if(input===null){
-
-return;
-
+    document.getElementById("negotiationResult")
+        .textContent="";
 }
 
-const offer=
-Number(input);
+function submitNegotiation(){
 
-if(!Number.isFinite(offer)||offer<=0){
+    const proposal=
+        Number(document.getElementById("negotiationPrice").value);
 
-log("❌ Ongeldige prijs.");
+    if(!Number.isFinite(proposal) || proposal<0.10){
 
-return;
+        document.getElementById("negotiationResult")
+            .textContent=
+            "Vul een geldige prijs van minimaal €0,10 in.";
 
-}
+        return;
+    }
 
-const difference=
-offer/minimum;
+    // Onder de vraagprijs is vaker nee.
+    // Boven de vraagprijs is vaker ja.
+    // De kans op nee blijft bewust niet te groot.
+    const ratio=
+        proposal/producerOfferPrice;
 
-let chance;
+    let yesChance=
+        0.80+(ratio-1)*1.40;
 
-if(offer>=minimum){
+    yesChance=
+        Math.max(.45,Math.min(.98,yesChance));
 
-chance=
-.75+
-Math.random()*.20;
+    if(Math.random()<yesChance){
 
-}
+        supplierFactor=
+            proposal/
+            (BASE_PRODUCT_PRICE*(1+inflation/100));
 
-else{
+        supplierFactor=
+            Math.max(.05,Math.min(10,supplierFactor));
 
-chance=
-.15+
-Math.random()*.35;
-}
+        calculateBuyPrice();
 
-if(
-offer>=buyPrice
-){
+        log(
+            "🤝 Onderhandeling gelukt! Producent accepteert €"+
+            buyPrice.toFixed(2)+
+            " per product."
+        );
 
-chance+=.10;
+        closeNegotiation();
 
-}
+        showEconomicPopup(
+            "🤝 Deal gesloten!",
+            "De producent gaat akkoord met jouw voorstel.",
+            "Nieuwe inkoopprijs: €"+
+            buyPrice.toFixed(2)
+        );
 
-chance=
-Math.min(
-.98,
-chance
-);
+        updateProductPrices();
+        updateUI();
 
-if(Math.random()<chance){
+    }else{
 
-supplierFactor=
-offer/
-BASE_PRODUCT_PRICE/
-(1+inflation/100);
+        document.getElementById("negotiationResult")
+            .textContent=
+            "❌ De producent zegt nee. Je kunt opnieuw een voorstel doen.";
 
-supplierFactor=
-Math.max(
-.25,
-Math.min(10,supplierFactor)
-);
-
-calculateBuyPrice();
-
-log(
-"🤝 Onderhandeling gelukt! Nieuwe inkoopprijs: €"+
-buyPrice.toFixed(2)
-);
-
-showEconomicPopup(
-"🤝 Onderhandeling gelukt",
-"De producent heeft jouw bod geaccepteerd.",
-"Nieuwe inkoopprijs: €"+
-buyPrice.toFixed(2)
-);
-
-}
-
-else{
-
-log(
-"❌ Onderhandeling mislukt."
-);
-
-showEconomicPopup(
-"❌ Onderhandeling mislukt",
-"De producent wilde jouw prijs niet accepteren.",
-"Je moet een andere producent zoeken."
-);
-
-findOtherProducer();
-
-}
-
-updateProductPrices();
-
-updateUI();
-
-}
-
-
-/* =====================================================
-ANDERE PRODUCENT
-===================================================== */
-
-function findOtherProducer(){
-
-const oldPrice=
-buyPrice;
-
-let change;
-
-if(Math.random()<.55){
-
-change=
-.85+
-Math.random()*.30;
-
-}
-else{
-
-change=
-1.00+
-Math.random()*.40;
-
-}
-
-supplierFactor*=change;
-
-supplierFactor=
-Math.max(
-.25,
-Math.min(
-10,
-supplierFactor
-)
-);
-
-calculateBuyPrice();
-
-log(
-"🔎 Je hebt een andere producent gevonden."
-);
-
-showEconomicPopup(
-"🔎 Nieuwe producent",
-"Je hebt een andere producent gevonden. Hij kan goedkoper, maar soms ook duurder zijn.",
-"Nieuwe inkoopprijs: €"+
-buyPrice.toFixed(2)
-);
-
+        log(
+            "❌ Producent weigert je voorstel van €"+
+            proposal.toFixed(2)+
+            ". Probeer opnieuw te onderhandelen."
+        );
+    }
 }
 
 
@@ -2272,20 +2435,22 @@ KEUZE
 
 function choose(n){
 
-if(!choices)
-return;
+    if(!choices) return;
 
-choices[n]();
 
-choices=null;
+    choices[n]();
 
-document.getElementById("choice").style.display=
-"none";
 
-updateProductPrices();
+    document.getElementById("choice")
+        .style.display="none";
 
-updateUI();
 
+    choices=null;
+
+
+    updateProductPrices();
+
+    updateUI();
 }
 
 
@@ -2294,71 +2459,72 @@ ECONOMISCHE POPUP
 ===================================================== */
 
 function showEconomicPopup(
-title,
-text,
-effect
+    title,
+    text,
+    effect
 ){
 
-const popup=
-document.createElement("div");
+    const popup=
+        document.createElement("div");
 
-popup.style.position="fixed";
 
-popup.style.left="50%";
+    popup.style.position="fixed";
 
-popup.style.top="50%";
+    popup.style.left="50%";
 
-popup.style.transform=
-"translate(-50%,-50%)";
+    popup.style.top="50%";
 
-popup.style.zIndex="9999";
+    popup.style.transform=
+        "translate(-50%,-50%)";
 
-popup.style.width="430px";
+    popup.style.zIndex="9999";
 
-popup.style.maxWidth="90%";
+    popup.style.width="430px";
 
-popup.style.background="#17232e";
+    popup.style.maxWidth="90%";
 
-popup.style.border=
-"2px solid #718493";
+    popup.style.background="#17232e";
 
-popup.style.borderRadius="15px";
+    popup.style.border=
+        "2px solid #718493";
 
-popup.style.padding="25px";
+    popup.style.borderRadius="15px";
 
-popup.style.boxShadow=
-"0 20px 80px rgba(0,0,0,.7)";
+    popup.style.padding="25px";
 
-popup.innerHTML=`
+    popup.style.boxShadow=
+        "0 20px 80px rgba(0,0,0,.7)";
 
-<h1 style="margin-top:0;text-align:center">
-${title}
-</h1>
 
-<p style="font-size:17px;line-height:1.5">
-${text}
-</p>
+    popup.innerHTML=`
 
-<div
-style="
-background:#22333f;
-padding:12px;
-border-radius:8px;
-margin:15px 0;
-">
-${effect}
-</div>
+        <h1 style="margin-top:0;text-align:center">
+            ${title}
+        </h1>
 
-<button
-style="width:100%;font-size:16px"
-onclick="this.parentElement.remove()">
-OK
-</button>
+        <p style="font-size:17px;line-height:1.5">
+            ${text}
+        </p>
 
-`;
+        <div style="
+            background:#22333f;
+            padding:12px;
+            border-radius:8px;
+            margin:15px 0;
+        ">
+            ${effect}
+        </div>
 
-document.body.appendChild(popup);
+        <button
+            style="width:100%;font-size:16px"
+            onclick="this.parentElement.remove()">
+            OK
+        </button>
 
+    `;
+
+
+    document.body.appendChild(popup);
 }
 
 
@@ -2368,116 +2534,119 @@ TIJD
 
 function updateTime(){
 
-if(paused)
-return;
-
-hour+=.003*gameSpeed;
-
-if(hour>=24){
-
-hour=0;
-
-day++;
+    if(
+        paused ||
+        gameEnded
+    ) return;
 
 
-/* BELASTING ALLEEN OM DE 2 DAGEN */
-
-if(day%2===0){
-
-payTaxes();
-
-}
+    hour+=.003*gameSpeed;
 
 
-/* PRODUCENT */
+    if(hour>=24){
 
-if(Math.random()<.40){
+        hour=0;
 
-showProducerChoice();
-
-}
+        day++;
 
 
-/* ECONOMISCHE GEBEURTENIS */
+        /* BELASTING ELKE 2 DAGEN */
 
-if(Math.random()<.25){
+        if(day%2===1){
 
-randomEconomicEvent();
-
-}
-
-
-/* KINDEREN */
-
-if(
-people.length<1000&&
-Math.random()<.65
-){
-
-const babies=
-Math.random()<.15?2:1;
-
-for(
-let i=0;
-i<babies;
-i++
-){
-
-createPerson();
-
-population++;
-
-}
-
-log(
-"👶 Er zijn nieuwe kinderen geboren."
-);
-
-}
+            payTaxes();
+        }
 
 
-/* LAGE VRAAG */
-
-if(
-demand<50 &&
-day%2===0 &&
-people.length>0
-){
-
-const deaths=
-Math.random()<.50?2:1;
-
-for(
-let i=0;
-i<deaths&&people.length>0;
-i++
-){
-
-const p=
-people.pop();
-
-if(p.element)
-p.element.remove();
-
-population--;
-
-}
-
-log(
-"📉 Door de zeer lage vraag zijn er mensen verdwenen uit de bevolking."
-);
-
-}
+        /* CONCURRENT */
+        updateCompetitor();
 
 
-/* RECLAME VERDWIJNT LANGZAAM */
+        /* PRODUCENT */
 
-advertising*=.97;
+        if(Math.random()<.40){
 
-demandModifier*=.9;
+            showProducerChoice();
+        }
 
-}
 
+        /* ECONOMISCHE GEBEURTENIS */
+
+        if(Math.random()<.25){
+
+            randomEconomicEvent();
+        }
+
+
+        /* KINDEREN */
+
+        if(
+            people.length<1000 &&
+            Math.random()<.65
+        ){
+
+            const babies=
+                Math.random()<.15?
+                2:
+                1;
+
+
+            for(
+                let i=0;
+                i<babies;
+                i++
+            ){
+
+                createPerson();
+
+                population++;
+            }
+
+
+            log(
+                "👶 Er zijn nieuwe kinderen geboren."
+            );
+        }
+
+
+        /* LAGE VRAAG = MENSEN STERVEN */
+
+        if(
+            demand<50 &&
+            population>0
+        ){
+
+            if(day%2===1){
+
+                const deaths=2;
+
+                for(
+                    let i=0;
+                    i<deaths &&
+                    people.length>0;
+                    i++
+                ){
+
+                    const p=
+                        people.pop();
+
+                    p.element.remove();
+
+                    population--;
+                }
+
+
+                log(
+                    "⚠️ Door de zeer lage vraag zijn er 2 mensen gestorven."
+                );
+            }
+        }
+
+
+        advertising*=.97;
+
+        demandModifier*=.9;
+    }
 }
 
 
@@ -2487,880 +2656,178 @@ RANDOM ECONOMIE
 
 function randomEconomicEvent(){
 
-if(!building)
-return;
+    if(!building) return;
 
-const event=
-Math.floor(Math.random()*7);
 
-if(event===0){
+    const event=
+        Math.floor(
+            Math.random()*7
+        );
 
-inflation+=
-1+
-Math.random()*4;
 
-log("📈 Inflatie stijgt.");
+    if(event===0){
 
-showEconomicPopup(
-"📈 Inflatie stijgt",
-"De algemene prijzen beginnen sneller te stijgen.",
-"Je inkoopproducten worden duurder."
-);
+        inflation+=
+            1+
+            Math.random()*4;
 
-}
 
-else if(event===1){
+        log(
+            "📈 Inflatie stijgt."
+        );
 
-inflation+=
-5+
-Math.random()*8;
 
-log("🔥 Hoge inflatie!");
+        showEconomicPopup(
+            "📈 Inflatie stijgt",
+            "De algemene prijzen beginnen sneller te stijgen.",
+            "Je inkoopproducten worden duurder."
+        );
+    }
 
-showEconomicPopup(
-"🔥 Hoge inflatie",
-"De economie heeft een sterke periode van prijsstijgingen.",
-"Je inkoopprijs kan flink oplopen."
-);
 
-}
+    else if(event===1){
 
-else if(event===2){
+        inflation+=
+            5+
+            Math.random()*8;
 
-inflation-=
-1+
-Math.random()*4;
 
-log("📉 Inflatie daalt.");
+        log(
+            "🔥 Hoge inflatie!"
+        );
 
-showEconomicPopup(
-"📉 Inflatie daalt",
-"De prijsstijgingen worden kleiner.",
-"Je producten worden relatief goedkoper."
-);
 
-}
+        showEconomicPopup(
+            "🔥 Hoge inflatie",
+            "De economie heeft een sterke periode van prijsstijgingen.",
+            "Je inkoopprijs kan flink oplopen."
+        );
+    }
 
-else if(event===3){
 
-inflation-=
-4+
-Math.random()*6;
+    else if(event===2){
 
-log("📉 Deflatie!");
+        inflation-=
+            1+
+            Math.random()*4;
 
-showEconomicPopup(
-"📉 Deflatie",
-"Prijzen beginnen in de economie te dalen.",
-"Je inkoopprijs kan goedkoper worden."
-);
 
-}
+        log(
+            "📉 Inflatie daalt."
+        );
 
-else if(event===4){
 
-demandModifier+=
-10+
-Math.random()*20;
+        showEconomicPopup(
+            "📉 Inflatie daalt",
+            "De prijsstijgingen worden kleiner.",
+            "Je producten worden relatief goedkoper."
+        );
+    }
 
-log("📈 Economische boom!");
 
-showEconomicPopup(
-"📈 Economische boom",
-"Mensen hebben meer vertrouwen en geven meer geld uit.",
-"De vraag naar je producten stijgt."
-);
+    else if(event===3){
 
-}
+        inflation-=
+            4+
+            Math.random()*6;
 
-else if(event===5){
 
-demandModifier-=
-10+
-Math.random()*25;
+        log(
+            "📉 Deflatie!"
+        );
 
-log("📉 Recessie!");
 
-showEconomicPopup(
-"📉 Recessie",
-"Mensen worden voorzichtiger met hun geld.",
-"De vraag naar je producten daalt."
-);
+        showEconomicPopup(
+            "📉 Deflatie",
+            "Prijzen beginnen in de economie te dalen.",
+            "Je inkoopprijs kan goedkoper worden."
+        );
+    }
 
-}
 
-else{
+    else if(event===4){
 
-supplierFactor*=
-.85+
-Math.random()*.15;
+        demandModifier+=
+            10+
+            Math.random()*20;
 
-calculateBuyPrice();
 
-log(
-"🏭 Leveranciers verlagen tijdelijk hun prijzen."
-);
+        log(
+            "📈 Economische boom!"
+        );
 
-showEconomicPopup(
-"🏭 Leverancierskorting",
-"Leveranciers hebben tijdelijk lagere kosten.",
-"Nieuwe inkoopprijs: €"+
-buyPrice.toFixed(2)
-);
 
-}
+        showEconomicPopup(
+            "📈 Economische boom",
+            "Mensen hebben meer vertrouwen en geven meer geld uit.",
+            "De vraag naar je producten stijgt."
+        );
+    }
 
-inflation=
-Math.max(
--20,
-Math.min(
-150,
-inflation
-)
-);
 
-demandModifier=
-Math.max(
--100,
-Math.min(
-100,
-demandModifier
-)
-);
+    else if(event===5){
 
-calculateBuyPrice();
+        demandModifier-=
+            10+
+            Math.random()*25;
 
-updateProductPrices();
 
-updateUI();
+        log(
+            "📉 Recessie!"
+        );
 
-}
 
+        showEconomicPopup(
+            "📉 Recessie",
+            "Mensen worden voorzichtiger met hun geld.",
+            "De vraag naar je producten daalt."
+        );
+    }
 
-/* =====================================================
-CONCURRENT AANKOMST
-===================================================== */
 
-function updateCompetitor(){
+    else{
 
-if(!building)
-return;
+        supplierFactor*=
+            .85+
+            Math.random()*.15;
 
 
-/* concurrent komt pas veel later */
+        calculateBuyPrice();
 
-if(!competitorExists){
 
-competitorTimer+=.003*gameSpeed;
+        log(
+            "🏭 Leveranciers verlagen tijdelijk hun prijzen."
+        );
 
-if(
-day>=competitorNextArrival &&
-competitorTimer>1
-){
 
-spawnCompetitor();
+        showEconomicPopup(
+            "🏭 Leverancierskorting",
+            "Leveranciers hebben tijdelijk lagere kosten.",
+            "Nieuwe inkoopprijs: €"+
+            buyPrice.toFixed(2)
+        );
+    }
 
-}
 
-return;
+    inflation=
+        Math.max(
+            -20,
+            Math.min(150,inflation)
+        );
 
-}
 
+    demandModifier=
+        Math.max(
+            -100,
+            Math.min(100,demandModifier)
+        );
 
-/* concurrent inkomen */
 
-competitorIncomeTimer+=
-.003*gameSpeed;
+    calculateBuyPrice();
 
-if(
-competitorIncomeTimer>1
-){
+    updateProductPrices();
 
-competitorIncomeTimer=0;
-
-const competitorIncome=
-competitorCustomers*
-competitorPrice*
-.35;
-
-competitorMoney+=
-competitorIncome;
-
-}
-
-
-/* concurrent groeit */
-
-if(
-competitorMoney>
-buildings[
-Math.min(
-10,
-competitorLevel+1
-)
-].cost
-){
-
-if(
-competitorLevel<10 &&
-Math.random()<.002*gameSpeed
-){
-
-upgradeCompetitor();
-
-}
-
-}
-
-
-/* concurrent klanten */
-
-const playerDemand=
-demand;
-
-let competitorDemand=
-100*
-(
-buildings[
-Math.max(1,competitorLevel)
-].price/
-Math.max(
-1,
-competitorPrice
-)
-);
-
-competitorDemand+=
-competitorQuality*.45;
-
-competitorDemand-=75;
-
-if(
-stock<=0
-){
-
-competitorDemand+=25;
-
-}
-
-if(
-price>competitorPrice &&
-quality>competitorQuality
-){
-
-competitorDemand-=20;
-
-}
-
-competitorDemand=
-Math.max(
-0,
-Math.min(
-100,
-competitorDemand
-)
-);
-
-
-/* makkelijkere concurrent */
-
-let chance=
-competitorDemand/
-100*
-.012*
-gameSpeed;
-
-
-/* begint met maar maximaal 5 */
-
-const maxCustomers=
-Math.min(
-5+
-Math.floor(
-(day-competitorNextArrival)/3
-),
-buildings[
-Math.max(1,competitorLevel)
-].capacity
-);
-
-
-/* niet meteen alle klanten */
-
-if(
-competitorCustomers<maxCustomers &&
-Math.random()<chance
-){
-
-competitorCustomers++;
-
-spawnCompetitorCustomer();
-
-}
-
-
-/* concurrent verliest langzaam klanten */
-
-if(
-Math.random()<.002 &&
-competitorCustomers>0
-){
-
-competitorCustomers--;
-
-removeOneCompetitorCustomer();
-
-}
-
-
-/* concurrent krijgt soms extra geld */
-
-if(
-competitorMoney<0
-){
-
-competitorMoney=0;
-
-}
-
-
-/* concurrent kan failliet */
-
-if(
-competitorMoney<=0 &&
-competitorCustomers<=0
-){
-
-competitorDefeatedTimer+=
-.003*gameSpeed;
-
-if(
-competitorDefeatedTimer>3
-){
-
-defeatCompetitor();
-
-}
-
-}
-
-}
-
-
-/* =====================================================
-CONCURRENT BOUWEN
-===================================================== */
-
-function spawnCompetitor(){
-
-competitorExists=true;
-
-competitorMoney=3000;
-
-competitorLevel=1;
-
-competitorQuality=35;
-
-competitorPrice=6;
-
-competitorCustomers=0;
-
-competitorBuildings=[];
-
-competitorTimer=0;
-
-competitorDefeatedTimer=0;
-
-const angle=
-Math.random()*Math.PI*2;
-
-const distance=450;
-
-const x=
-building.x+
-Math.cos(angle)*distance;
-
-const y=
-building.y+
-Math.sin(angle)*distance;
-
-createCompetitorBuilding(
-1,
-x,
-y
-);
-
-log(
-"🏢 Er is een concurrent gekomen!"
-);
-
-showEconomicPopup(
-"🏢 Concurrent!",
-"Een nieuwe concurrent is begonnen.",
-"Hij begint rustig met maximaal 5 klanten en groeit langzaam."
-);
-
-}
-
-
-/* =====================================================
-CONCURRENT GEBOUW
-===================================================== */
-
-function createCompetitorBuilding(
-n,
-x,
-y
-){
-
-const b=buildings[n];
-
-const el=
-document.createElement("div");
-
-el.className=
-"competitorBuilding";
-
-el.style.left=
-(x-35)+"px";
-
-el.style.top=
-(y-45)+"px";
-
-el.innerHTML=
-b.emoji+
-"<span>Concurrent - "+
-b.name+
-"</span>";
-
-objects.appendChild(el);
-
-competitorBuildings.push({
-
-x:x,
-
-y:y,
-
-level:n,
-
-element:el
-
-});
-
-}
-
-
-/* =====================================================
-CONCURRENT UPGRADEN
-===================================================== */
-
-function upgradeCompetitor(){
-
-if(
-competitorLevel>=10
-)
-return;
-
-const next=
-competitorLevel+1;
-
-const cost=
-buildings[next].cost;
-
-if(
-competitorMoney<cost
-)
-return;
-
-competitorMoney-=cost;
-
-competitorLevel=next;
-
-const last=
-competitorBuildings[
-competitorBuildings.length-1
-];
-
-let x=
-last?
-last.x+
-100+
-Math.random()*150:
-building.x+500;
-
-let y=
-last?
-last.y+
-100+
-Math.random()*150:
-building.y+500;
-
-x=Math.max(
-50,
-Math.min(
-5900,
-x
-)
-);
-
-y=Math.max(
-50,
-Math.min(
-5900,
-y
-)
-);
-
-createCompetitorBuilding(
-next,
-x,
-y
-);
-
-competitorQuality+=3;
-
-competitorPrice=
-buildings[next].price;
-
-log(
-"🏗️ De concurrent heeft zichzelf opgewaardeerd naar "+
-buildings[next].name+"."
-);
-
-}
-
-
-/* =====================================================
-CONCURRENT KLANT
-===================================================== */
-
-function spawnCompetitorCustomer(){
-
-if(
-competitorBuildings.length===0
-)
-return;
-
-const b=
-competitorBuildings[
-competitorBuildings.length-1
-];
-
-const angle=
-Math.random()*Math.PI*2;
-
-const distance=
-150+
-Math.random()*350;
-
-const c={
-
-x:b.x+
-Math.cos(angle)*distance,
-
-y:b.y+
-Math.sin(angle)*distance,
-
-targetX:b.x,
-
-targetY:b.y,
-
-element:null
-
-};
-
-c.element=addObject(
-"competitorCustomer",
-Math.random()<.5?"👨":"👩",
-c.x,
-c.y
-);
-
-competitorCustomerObjects.push(c);
-
-}
-
-
-/* =====================================================
-CONCURRENT KLANTEN BEWEGEN
-===================================================== */
-
-function updateCompetitorCustomers(){
-
-if(paused)
-return;
-
-for(
-let i=competitorCustomerObjects.length-1;
-i>=0;
-i--
-){
-
-const c=
-competitorCustomerObjects[i];
-
-const dx=
-c.targetX-c.x;
-
-const dy=
-c.targetY-c.y;
-
-const distance=
-Math.sqrt(
-dx*dx+dy*dy
-);
-
-if(distance<10){
-
-c.element.remove();
-
-competitorCustomerObjects.splice(i,1);
-
-continue;
-
-}
-
-c.x+=
-dx/distance*.7*gameSpeed;
-
-c.y+=
-dy/distance*.7*gameSpeed;
-
-c.element.style.left=
-c.x+"px";
-
-c.element.style.top=
-c.y+"px";
-
-}
-
-}
-
-
-/* =====================================================
-EEN CONCURRENT KLANT WEG
-===================================================== */
-
-function removeOneCompetitorCustomer(){
-
-if(
-competitorCustomerObjects.length===0
-)
-return;
-
-const c=
-competitorCustomerObjects.pop();
-
-if(c.element)
-c.element.remove();
-
-}
-
-
-/* =====================================================
-CONCURRENT VERSLAGEN
-===================================================== */
-
-function defeatCompetitor(){
-
-log(
-"🏆 De concurrent is failliet gegaan!"
-);
-
-showEconomicPopup(
-"🏆 Concurrent verslagen!",
-"Je concurrent is blut en heeft geen klanten meer.",
-"Na een willekeurige tijd kan er een nieuwe concurrent komen."
-);
-
-for(
-const b of competitorBuildings
-){
-
-if(b.element)
-b.element.remove();
-
-}
-
-for(
-const c of competitorCustomerObjects
-){
-
-if(c.element)
-c.element.remove();
-
-}
-
-competitorBuildings=[];
-
-competitorCustomerObjects=[];
-
-competitorExists=false;
-
-competitorMoney=0;
-
-competitorLevel=0;
-
-competitorCustomers=0;
-
-competitorTimer=0;
-
-competitorDefeatedTimer=0;
-
-competitorNextArrival=
-day+
-8+
-Math.floor(
-Math.random()*18
-);
-
-}
-
-
-/* =====================================================
-CONCURRENT KAN KLANTEN STELEN
-===================================================== */
-
-function competitorStealCustomers(){
-
-if(
-!competitorExists||
-!building
-)
-return;
-
-
-/* alleen als hij echt aantrekkelijker is */
-
-let competitorScore=
-competitorQuality-
-competitorPrice*.4;
-
-let playerScore=
-quality-
-price*.4;
-
-if(
-stock<=0
-){
-
-competitorScore+=25;
-
-}
-
-if(
-demand<30
-){
-
-competitorScore+=15;
-
-}
-
-
-/* als speler betere kwaliteit heeft terwijl hij duurder is,
-   blijven klanten juist bij speler */
-
-if(
-quality>competitorQuality &&
-price>competitorPrice
-){
-
-playerScore+=15;
-
-}
-
-
-/* alleen langzaam klanten laten overstappen */
-
-if(
-competitorScore>playerScore &&
-customers.length>0 &&
-competitorCustomers<10
-){
-
-if(Math.random()<.003*gameSpeed){
-
-const c=
-customers.pop();
-
-if(c){
-
-if(c.element)
-c.element.remove();
-
-competitorCustomers++;
-
-spawnCompetitorCustomer();
-
-log(
-"👥 Een klant is naar de concurrent gegaan."
-);
-
-}
-
-}
-
-}
-
-}
-
-
-/* =====================================================
-EXTRA GELD GEBOUWEN
-===================================================== */
-
-function buildingIncome(){
-
-if(
-!building||
-paused
-)
-return;
-
-if(
-Math.random()<.003*gameSpeed
-){
-
-const income=
-buildings[building.level].income;
-
-if(income>0){
-
-money+=income;
-
-log(
-"🏢 Je gebouwen leveren €"+
-income.toLocaleString("nl-NL")+
-" extra op."
-);
-
-}
-
-}
-
-}
-
-
-/* =====================================================
-GAME OVER
-===================================================== */
-
-function checkGameOver(){
-
-if(
-money<=0 &&
-stock<=0 &&
-people.length<=0 &&
-customers.length<=0
-){
-
-paused=true;
-
-document.getElementById("gameOver").style.display=
-"block";
-
-}
-
+    updateUI();
 }
 
 
@@ -3370,142 +2837,131 @@ UI
 
 function updateUI(){
 
-calculateDemand();
+    calculateDemand();
 
-calculateBuyPrice();
+    calculateBuyPrice();
 
-updateTax();
-
-
-document.getElementById("money").textContent=
-"💰 €"+
-money.toFixed(2);
-
-document.getElementById("companyMoney").textContent=
-money.toFixed(2);
-
-document.getElementById("level").textContent=
-level;
-
-document.getElementById("levelName").textContent=
-building?
-buildings[level].name:
-"Nog geen bedrijf";
-
-document.getElementById("customers").textContent=
-customers.length;
-
-document.getElementById("demand").textContent=
-Math.floor(demand);
-
-document.getElementById("demandBar").style.width=
-demand+"%";
-
-document.getElementById("price").textContent=
-price.toFixed(2);
-
-document.getElementById("buyPrice").textContent=
-buyPrice.toFixed(2);
-
-document.getElementById("profit").textContent=
-(price-buyPrice).toFixed(2);
-
-document.getElementById("stock").textContent=
-stock;
-
-document.getElementById("capacity").textContent=
-stockCapacity;
-
-document.getElementById("inflation").textContent=
-inflation.toFixed(1);
-
-document.getElementById("population").textContent=
-people.length;
-
-document.getElementById("day").textContent=
-day;
-
-const h=Math.floor(hour);
-
-const m=Math.floor(
-(hour-h)*60
-);
-
-document.getElementById("time").textContent=
-String(h).padStart(2,"0")+
-":"+
-String(m).padStart(2,"0");
-
-document.getElementById("speed").textContent=
-gameSpeed.toFixed(1)+"x";
-
-document.getElementById("zoomText").textContent=
-Math.round(zoomLevel*100)+"%";
+    updateTax();
 
 
-/* concurrent UI */
+    document.getElementById("money")
+        .textContent=
+        "💰 €"+
+        money.toFixed(2);
 
-if(!competitorExists){
 
-document.getElementById("competitorStatus").textContent=
-"Nog niet gekomen";
+    document.getElementById("companyMoney")
+        .textContent=
+        money.toFixed(2);
 
-}
-else{
 
-document.getElementById("competitorStatus").textContent=
-"Actief";
+    document.getElementById("level")
+        .textContent=level;
 
-}
 
-document.getElementById("competitorMoney").textContent=
-Math.max(0,competitorMoney).toFixed(2);
+    document.getElementById("levelName")
+        .textContent=
+        building?
+        buildings[level].name:
+        "Nog geen bedrijf";
 
-document.getElementById("competitorCustomers").textContent=
-competitorCustomers;
 
-document.getElementById("competitorLevel").textContent=
-competitorLevel;
+    document.getElementById("customers")
+        .textContent=
+        customers.length;
 
-let cdemand=0;
 
-if(competitorExists){
+    document.getElementById("customerCapacity")
+        .textContent=
+        getTotalCustomerCapacity();
 
-cdemand=
-100*
-(
-buildings[
-Math.max(1,competitorLevel)
-].price/
-Math.max(
-1,
-competitorPrice
-)
-);
 
-cdemand+=competitorQuality*.45;
+    if(competitor){
+        document.getElementById("competitorMoney").textContent=competitor.money.toFixed(2);
+        document.getElementById("competitorCustomers").textContent=competitorCustomers.length;
+        document.getElementById("competitorPrice").textContent=competitor.price.toFixed(2);
+        document.getElementById("competitorQuality").textContent=Math.round(competitor.quality);
+    }
 
-cdemand-=75;
 
-cdemand=
-Math.max(
-0,
-Math.min(
-100,
-cdemand
-)
-);
+    document.getElementById("demand")
+        .textContent=
+        Math.floor(demand);
 
-}
 
-document.getElementById("competitorDemand").textContent=
-Math.floor(cdemand);
+    document.getElementById("demandBar")
+        .style.width=
+        demand+"%";
 
-document.getElementById("competitorQuality").textContent=
-Math.floor(competitorQuality);
 
-updateProductPrices();
+    document.getElementById("price")
+        .textContent=
+        price.toFixed(2);
 
+
+    document.getElementById("buyPrice")
+        .textContent=
+        buyPrice.toFixed(2);
+
+
+    document.getElementById("profit")
+        .textContent=
+        (price-buyPrice).toFixed(2);
+
+
+    document.getElementById("stock")
+        .textContent=stock;
+
+
+    document.getElementById("capacity")
+        .textContent=
+        stockCapacity;
+
+
+    document.getElementById("inflation")
+        .textContent=
+        inflation.toFixed(1);
+
+
+    document.getElementById("population")
+        .textContent=
+        population;
+
+
+    document.getElementById("day")
+        .textContent=day;
+
+
+    const h=Math.floor(hour);
+
+    const m=Math.floor(
+        (hour-h)*60
+    );
+
+
+    document.getElementById("time")
+        .textContent=
+        String(h).padStart(2,"0")+
+        ":"+
+        String(m).padStart(2,"0");
+
+
+    document.getElementById("speed")
+        .textContent=
+        gameSpeed.toFixed(1)+"x";
+
+
+    document.getElementById("zoomText")
+        .textContent=
+        Math.round(
+            zoomLevel*100
+        )+"%";
+
+
+    updateProductPrices();
+
+
+    checkGameOver();
 }
 
 
@@ -3515,23 +2971,25 @@ LOG
 
 function log(text){
 
-const box=
-document.getElementById("log");
+    const box=
+        document.getElementById("log");
 
-const line=
-document.createElement("div");
 
-line.textContent=
-"• "+text;
+    const line=
+        document.createElement("div");
 
-box.prepend(line);
 
-while(box.children.length>50){
+    line.textContent=
+        "• "+text;
 
-box.lastChild.remove();
 
-}
+    box.prepend(line);
 
+
+    while(box.children.length>50){
+
+        box.lastChild.remove();
+    }
 }
 
 
@@ -3539,45 +2997,92 @@ box.lastChild.remove();
 ZOOM
 ===================================================== */
 
-function zoom(amount){
+let panX=0;
+let panY=0;
+let dragging=false;
+let dragStartX=0;
+let dragStartY=0;
+let panStartX=0;
+let panStartY=0;
+let didDrag=false;
 
-zoomLevel+=amount;
+function applyView(){
+    document.getElementById("world").style.transform=
+        `translate(${panX}px,${panY}px) scale(${zoomLevel})`;
 
-zoomLevel=
-Math.max(
-.2,
-Math.min(
-2.5,
-zoomLevel
-)
-);
-
-document.getElementById("world").style.transform=
-`scale(${zoomLevel})`;
-
-document.getElementById("zoomText").textContent=
-Math.round(zoomLevel*100)+"%";
-
+    document.getElementById("zoomText").textContent=
+        Math.round(zoomLevel*100)+"%";
 }
 
+function zoom(amount){
+    const map=document.getElementById("map");
+    const rect=map.getBoundingClientRect();
+    const oldZoom=zoomLevel;
 
-document
-.getElementById("map")
-.addEventListener(
-"wheel",
-function(e){
+    zoomLevel+=amount;
+    zoomLevel=Math.max(.2,Math.min(2.5,zoomLevel));
 
-e.preventDefault();
+    // Zoom rond de plek waar de muis staat.
+    const mouseX=window._lastMouseX??(rect.left+rect.width/2);
+    const mouseY=window._lastMouseY??(rect.top+rect.height/2);
+    const localX=mouseX-rect.left;
+    const localY=mouseY-rect.top;
 
-zoom(
-e.deltaY<0?
-.08:
--.08
+    panX=localX-(localX-panX)*zoomLevel/oldZoom;
+    panY=localY-(localY-panY)*zoomLevel/oldZoom;
+
+    applyView();
+}
+
+const mapView=document.getElementById("map");
+
+mapView.addEventListener("mousemove",function(e){
+    window._lastMouseX=e.clientX;
+    window._lastMouseY=e.clientY;
+
+    if(!dragging) return;
+
+    if(Math.abs(e.clientX-dragStartX)>4 || Math.abs(e.clientY-dragStartY)>4){
+        didDrag=true;
+    }
+    panX=panStartX+(e.clientX-dragStartX);
+    panY=panStartY+(e.clientY-dragStartY);
+    applyView();
+});
+
+mapView.addEventListener("mousedown",function(e){
+    if(e.button!==0) return;
+
+    dragging=true;
+    dragStartX=e.clientX;
+    dragStartY=e.clientY;
+    panStartX=panX;
+    panStartY=panY;
+    didDrag=false;
+    map.style.cursor="grabbing";
+});
+
+window.addEventListener("mouseup",function(){
+    dragging=false;
+    map.style.cursor="grab";
+});
+
+mapView.addEventListener("mouseleave",function(){
+    if(!dragging) map.style.cursor="grab";
+});
+
+mapView.style.cursor="grab";
+
+mapView.addEventListener(
+    "wheel",
+    function(e){
+        e.preventDefault();
+        zoom(e.deltaY<0?.08:-.08);
+    },
+    {passive:false}
 );
 
-},
-{passive:false}
-);
+applyView();
 
 
 /* =====================================================
@@ -3586,13 +3091,17 @@ PAUZE
 
 function pauseGame(){
 
-paused=!paused;
+    if(gameEnded) return;
 
-document.getElementById("pause").textContent=
-paused?
-"▶️ Doorgaan":
-"⏸️ Pauze";
 
+    paused=!paused;
+
+
+    document.getElementById("pause")
+        .textContent=
+        paused?
+        "▶️ Doorgaan":
+        "⏸️ Pauze";
 }
 
 
@@ -3602,23 +3111,27 @@ SNELHEID
 
 function changeSpeed(x){
 
-gameSpeed+=x*.5;
+    if(gameEnded) return;
 
-gameSpeed=
-Math.max(
-.5,
-Math.min(
-10,
-gameSpeed
-)
-);
 
-log(
-"⚡ Snelheid: "+
-gameSpeed.toFixed(1)+
-"x"
-);
+    gameSpeed+=x*.5;
 
+
+    gameSpeed=
+        Math.max(
+            .5,
+            Math.min(
+                10,
+                gameSpeed
+            )
+        );
+
+
+    log(
+        "⚡ Snelheid: "+
+        gameSpeed.toFixed(1)+
+        "x"
+    );
 }
 
 
@@ -3628,81 +3141,78 @@ OPSLAAN
 
 function saveGame(){
 
-const data={
+    const data={
 
-money,
+        money,
 
-level,
+        level,
 
-price,
+        price,
 
-stock,
+        stock,
 
-stockCapacity,
+        stockCapacity,
 
-inflation,
+        inflation,
 
-supplierFactor,
+        supplierFactor,
 
-demandModifier,
+        demandModifier,
 
-quality,
+        quality,
 
-advertising,
+        advertising,
 
-reputation,
+        reputation,
 
-day,
+        day,
 
-hour,
+        hour,
 
-population,
+        population,
 
-totalSalesToday,
+        totalSalesToday,
 
-taxReduction,
+        building:
+            building?
+            {
+                x:building.x,
+                y:building.y,
+                level:building.level
+            }:
+            null,
 
-building:
-building?
-{
-x:building.x,
-y:building.y,
-level:building.level
-}:
-null,
+        competitor:competitor?{
+            x:competitor.x,
+            y:competitor.y,
+            money:competitor.money,
+            price:competitor.price,
+            quality:competitor.quality
+        }:null,
+        competitorNextDay,
+        competitorRespawnDay,
 
-competitorExists,
+        ownedBuildings:
+            ownedBuildings.map(b=>({
 
-competitorMoney,
+                x:b.x,
 
-competitorLevel,
+                y:b.y,
 
-competitorCustomers,
+                level:b.level
+            }))
+    };
 
-competitorQuality,
 
-competitorPrice,
+    localStorage.setItem(
+        "wereldSimulator",
+        JSON.stringify(data)
+    );
 
-competitorNextArrival,
 
-competitorBuildings:
-competitorBuildings.map(b=>({
-
-x:b.x,
-y:b.y,
-level:b.level
-
-}))
-
-};
-
-localStorage.setItem(
-"wereldSimulator",
-JSON.stringify(data)
-);
-
-log("💾 Spel opgeslagen!");
-
+    log(
+        "💾 Spel opgeslagen!"
+    );
 }
 
 
@@ -3712,206 +3222,233 @@ LADEN
 
 function loadGame(){
 
-const saved=
-localStorage.getItem(
-"wereldSimulator"
-);
+    const saved=
+        localStorage.getItem(
+            "wereldSimulator"
+        );
 
-if(!saved){
 
-log("❌ Geen opgeslagen spel.");
+    if(!saved){
 
-return;
+        log(
+            "❌ Geen opgeslagen spel."
+        );
 
+        return;
+    }
+
+
+    const data=
+        JSON.parse(saved);
+
+
+    money=data.money??500;
+
+    level=data.level??0;
+
+    price=data.price??5;
+
+    stock=data.stock??0;
+
+    stockCapacity=
+        data.stockCapacity??30;
+
+    inflation=
+        data.inflation??0;
+
+    supplierFactor=
+        data.supplierFactor??1;
+
+    demandModifier=
+        data.demandModifier??0;
+
+    quality=data.quality??30;
+
+    advertising=
+        data.advertising??0;
+
+    reputation=
+        data.reputation??50;
+
+    day=data.day??1;
+
+    hour=data.hour??8;
+
+    population=
+        data.population??80;
+
+    totalSalesToday=
+        data.totalSalesToday??0;
+
+    if(competitor){if(competitor.element)competitor.element.remove();competitor=null;}
+    competitorCustomers.forEach(c=>{if(c.element)c.element.remove();});
+    competitorCustomers=[];
+    competitorNextDay=data.competitorNextDay??(day+3);
+    competitorRespawnDay=data.competitorRespawnDay??0;
+
+
+    people.forEach(
+        p=>p.element.remove()
+    );
+
+    people=[];
+
+
+    customers.forEach(
+        c=>c.element.remove()
+    );
+
+    customers=[];
+
+
+    ownedBuildings.forEach(
+        b=>{
+            if(b.element){
+                b.element.remove();
+            }
+        }
+    );
+
+    ownedBuildings=[];
+
+    building=null;
+
+
+    if(data.ownedBuildings){
+
+        for(
+            const savedBuilding
+            of data.ownedBuildings
+        ){
+
+            const newBuilding={
+
+                x:savedBuilding.x,
+
+                y:savedBuilding.y,
+
+                level:savedBuilding.level,
+
+                element:null
+            };
+
+
+            ownedBuildings.push(
+                newBuilding
+            );
+
+
+            createBuilding(
+                newBuilding
+            );
+        }
+    }
+
+
+    if(
+        data.building &&
+        ownedBuildings.length===0
+    ){
+
+        building={
+
+            x:data.building.x,
+
+            y:data.building.y,
+
+            level:data.building.level,
+
+            element:null
+        };
+
+
+        ownedBuildings.push(building);
+
+        createBuilding(building);
+    }
+
+
+    if(ownedBuildings.length>0){
+
+        building=
+            ownedBuildings[0];
+
+        level=
+            building.level;
+    }
+
+    if(data.competitor && building){
+        competitor={x:data.competitor.x,y:data.competitor.y,money:data.competitor.money,price:data.competitor.price,quality:data.competitor.quality,element:null};
+        const el=document.createElement("div");
+        el.className="competitorBuilding";
+        el.style.left=(competitor.x-35)+"px";
+        el.style.top=(competitor.y-45)+"px";
+        el.innerHTML="🏪<span>Concurrent</span>";
+        objects.appendChild(el);
+        competitor.element=el;
+        document.getElementById("competitorBox").style.display="block";
+    }
+
+
+    nextPerson=0;
+
+
+    for(
+        let i=0;
+        i<population;
+        i++
+    ){
+
+        createPerson();
+    }
+
+
+    calculateBuyPrice();
+
+    setupSlider();
+
+    updateUI();
+
+
+    log(
+        "📂 Spel geladen!"
+    );
 }
 
-const data=
-JSON.parse(saved);
 
+/* =====================================================
+GAME OVER
+===================================================== */
 
-money=data.money??500;
+function checkGameOver(){
 
-level=data.level??0;
+    if(gameEnded) return;
 
-price=data.price??5;
 
-stock=data.stock??0;
+    if(
+        money<=0 &&
+        stock<=0 &&
+        population<=0
+    ){
 
-stockCapacity=
-data.stockCapacity??30;
+        gameEnded=true;
 
-inflation=
-data.inflation??0;
+        paused=true;
 
-supplierFactor=
-data.supplierFactor??1;
 
-demandModifier=
-data.demandModifier??0;
+        document.getElementById("gameOverText")
+            .textContent=
+            "Je hebt €0, geen producten en geen mensen meer.";
 
-quality=
-data.quality??30;
 
-advertising=
-data.advertising??0;
+        document.getElementById("gameOver")
+            .style.display="flex";
 
-reputation=
-data.reputation??50;
 
-day=data.day??1;
-
-hour=data.hour??8;
-
-population=
-data.population??80;
-
-totalSalesToday=
-data.totalSalesToday??0;
-
-taxReduction=
-data.taxReduction??0;
-
-
-/* concurrent */
-
-competitorExists=
-data.competitorExists??false;
-
-competitorMoney=
-data.competitorMoney??0;
-
-competitorLevel=
-data.competitorLevel??0;
-
-competitorCustomers=
-data.competitorCustomers??0;
-
-competitorQuality=
-data.competitorQuality??35;
-
-competitorPrice=
-data.competitorPrice??6;
-
-competitorNextArrival=
-data.competitorNextArrival??
-(20+Math.floor(Math.random()*21));
-
-
-/* mensen */
-
-people.forEach(
-p=>p.element.remove()
-);
-
-people=[];
-
-customers.forEach(
-c=>c.element.remove()
-);
-
-customers=[];
-
-competitorCustomerObjects.forEach(
-c=>c.element.remove()
-);
-
-competitorCustomerObjects=[];
-
-
-/* gebouwen */
-
-if(
-building&&
-building.element
-){
-
-building.element.remove();
-
-}
-
-building=null;
-
-
-/* concurrent gebouwen */
-
-competitorBuildings.forEach(
-b=>{
-
-if(b.element)
-b.element.remove();
-
-}
-);
-
-competitorBuildings=[];
-
-
-if(data.building){
-
-building={
-
-x:data.building.x,
-
-y:data.building.y,
-
-level:data.building.level,
-
-element:null
-
-};
-
-createBuilding(building);
-
-}
-
-
-/* personen */
-
-nextPerson=0;
-
-for(
-let i=0;
-i<population;
-i++
-){
-
-createPerson();
-
-}
-
-
-/* concurrent */
-
-if(
-competitorExists &&
-data.competitorBuildings
-){
-
-for(
-const b of data.competitorBuildings
-){
-
-createCompetitorBuilding(
-b.level,
-b.x,
-b.y
-);
-
-}
-
-}
-
-
-/* voorraad en slider */
-
-calculateBuyPrice();
-
-setupSlider();
-
-updateUI();
-
-log("📂 Spel geladen!");
-
+        log(
+            "💀 GAME OVER: je hebt geen geld, producten of mensen meer."
+        );
+    }
 }
 
 
@@ -3927,52 +3464,45 @@ setupSlider();
 
 updateUI();
 
+
 log(
-"🌍 De wereld is gestart!"
+    "🌍 De wereld is gestart!"
 );
 
 log(
-"💰 Je begint met €500."
+    "⚔️ Er kan een concurrent verschijnen na een paar dagen."
 );
 
 log(
-"🛖 Je eerste kraampje is gratis."
+    "💰 Je begint met €500."
 );
 
 log(
-"🏗️ Er zijn 10 soorten gebouwen."
+    "🛖 Je eerste kraampje is gratis."
 );
 
 log(
-"🏭 Producenten veranderen regelmatig hun prijzen."
+    "🏗️ Er zijn 10 soorten gebouwen."
 );
 
 log(
-"🤝 Je kunt met producenten onderhandelen."
+    "👥 De klantcapaciteit van alle gebouwen wordt bij elkaar opgeteld."
 );
 
 log(
-"🔎 Een andere producent kan goedkoper of duurder zijn."
+    "🏭 Producenten veranderen regelmatig hun prijzen."
 );
 
 log(
-"📈 Inflatie en 📉 deflatie beïnvloeden je inkoopprijs."
+    "📈 Inflatie en 📉 deflatie beïnvloeden je inkoopprijs."
 );
 
 log(
-"🧾 Belasting wordt elke 2 dagen betaald."
+    "🧾 Belasting wordt elke 2 dagen betaald."
 );
 
 log(
-"🏢 De concurrent komt pas later."
-);
-
-log(
-"👥 De concurrent begint met maximaal 5 klanten."
-);
-
-log(
-"📦 De concurrent groeit langzaam."
+    "⚠️ Bij een zeer lage vraag kunnen er elke 2 dagen 2 mensen sterven."
 );
 
 
@@ -3982,29 +3512,23 @@ GAME LOOP
 
 function loop(){
 
-updatePeople();
+    updatePeople();
 
-updateCustomers();
+    updateCustomers();
 
-spawnCustomers();
+    spawnCustomers();
 
-updateTime();
+    spawnCompetitorCustomer();
 
-updateCompetitor();
+    updateCompetitorCustomers();
 
-updateCompetitorCustomers();
+    updateTime();
 
-competitorStealCustomers();
+    updateUI();
 
-buildingIncome();
-
-updateUI();
-
-checkGameOver();
-
-requestAnimationFrame(loop);
-
+    requestAnimationFrame(loop);
 }
+
 
 loop();
 
