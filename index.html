@@ -593,7 +593,7 @@ input[type=range]{
             type="range"
             id="priceSlider"
             min="0.50"
-            max="500"
+            max="1000"
             step="0.50"
             value="5"
             oninput="changePrice()">
@@ -780,7 +780,7 @@ const buildings={
     2:{
         name:"Kleine winkel",
         emoji:"🏪",
-        cost:250,
+        cost:500,
         capacity:8,
         price:10
     },
@@ -1105,6 +1105,8 @@ function spawnCompetitor(){
         money:Math.max(150,Math.min(1000,money*.7+200)),
         price:Math.max(.5,price*(.75+Math.random()*.2)),
         quality:Math.max(15,Math.min(90,quality*(.65+Math.random()*.25))),
+        level:1,
+        capacity:buildings[1].capacity,
         element:null
     };
     const el=document.createElement("div");
@@ -1179,16 +1181,51 @@ function updateCompetitor(){
         if(day>=competitorNextDay || (competitorRespawnDay>0 && day>=competitorRespawnDay)) spawnCompetitor();
         return;
     }
-    if(competitorCanWinCustomer() && competitorCustomers.length>0 && Math.random()<.01*gameSpeed){
-        const c=competitorCustomers.pop();
-        if(c && c.element)c.element.remove();
+
+    /* De concurrent groeit langzaam, maar wordt steeds slimmer. */
+    competitor.daysAlive=(competitor.daysAlive||0)+1;
+
+    /* Vaste kosten zijn laag genoeg zodat hij niet zomaar verdwijnt. */
+    competitor.money-=15+Math.random()*15;
+
+    /* Klanten brengen echt geld op en maken de concurrent geleidelijk sterker. */
+    const wonToday=Math.min(3,Math.floor(competitorCustomerLimit/5));
+    competitor.money+=wonToday*Math.max(1,competitor.price)*0.35;
+    competitorCustomerLimit=Math.min(30,competitorCustomerLimit+0.5);
+
+    /* Hij leert langzaam van jouw bedrijf. */
+    if(Math.random()<0.18){
+        if(price>competitor.price) competitor.price+=0.2+Math.random()*0.5;
+        else competitor.price-=0.1+Math.random()*0.3;
+        competitor.price=Math.max(0.5,Math.min(1000,competitor.price));
+    }
+    if(Math.random()<0.10){
+        competitor.quality+=0.5+Math.random()*1.2;
+        competitor.quality=Math.min(95,competitor.quality);
     }
 
-    /* De concurrent heeft iedere dag kosten. Zo kan hij uiteindelijk
-       blut raken en later door een nieuwe concurrent worden vervangen. */
-    competitor.money-=20+Math.random()*30;
+    /* Heel langzaam sparen voor een groter gebouw. */
+    if(competitor.money>0 && Math.random()<0.015*gameSpeed){
+        const nextLevel=Math.min(10,(competitor.level||1)+1);
+        if(nextLevel>(competitor.level||1)){
+            const upgradeCost=buildings[nextLevel].cost;
+            if(competitor.money>=upgradeCost){
+                competitor.money-=upgradeCost;
+                competitor.level=nextLevel;
+                competitor.capacity=(competitor.capacity||buildings[1].capacity)+buildings[nextLevel].capacity;
+                competitor.price=Math.max(0.5,buildings[nextLevel].price*(0.88+Math.random()*0.16));
+                if(competitor.element){
+                    competitor.element.innerHTML=buildings[nextLevel].emoji+"<span>Concurrent</span>";
+                }
+                log("⚔️ De concurrent is langzaam gegroeid naar een groter gebouw!");
+            }
+        }
+    }
 
-    competitorCustomerLimit=Math.min(20,competitorCustomerLimit+1);
+    /* Als hij veel geld heeft, kan hij soms een extra klantenboost krijgen. */
+    if(competitor.money>500 && Math.random()<0.08){
+        competitorCustomerLimit=Math.min(30,competitorCustomerLimit+1);
+    }
 
     if(competitor.money<=0) removeCompetitor();
 }
