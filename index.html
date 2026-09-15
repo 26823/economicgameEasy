@@ -728,7 +728,7 @@ input[type=range]{
         <input
             id="negotiationPrice"
             type="number"
-            min="0.10"
+            min="0.01"
             step="0.01"
             placeholder="Jouw prijs"
             style="width:100%; box-sizing:border-box; padding:12px; border-radius:10px; border:1px solid #555; background:#222; color:white; font-size:18px; margin:10px 0;">
@@ -2221,7 +2221,7 @@ function payTaxes(){
 
 
 /* =====================================================
-PRODUCENT POPUP
+   PRODUCENT POPUP
 ===================================================== */
 
 function showProducerChoice(){
@@ -2233,50 +2233,50 @@ function showProducerChoice(){
     ) return;
 
     // De producent noemt eerst zijn prijs.
-    producerOfferPrice=Math.max(
+    producerOfferPrice = Math.max(
         0.10,
-        buyPrice*(0.95+Math.random()*0.15)
+        buyPrice * (0.95 + Math.random() * 0.15)
     );
 
-    producerOfferPrice=
+    producerOfferPrice =
         Number(producerOfferPrice.toFixed(2));
 
-    choices=[
+    choices = [
 
         function(){
 
-            const change=
-                1.10+
-                Math.random()*.35;
+            const change =
+                1.10 +
+                Math.random() * 0.35;
 
-            supplierFactor*=change;
+            supplierFactor *= change;
 
-            supplierFactor=
-                Math.min(10,supplierFactor);
+            supplierFactor =
+                Math.min(10, supplierFactor);
 
             calculateBuyPrice();
 
             log(
-                "🏭 Producent verhoogt de prijs met "+
-                Math.round((change-1)*100)+
+                "🏭 Producent verhoogt de prijs met " +
+                Math.round((change - 1) * 100) +
                 "%."
             );
 
             showEconomicPopup(
                 "📈 Producent verhoogt prijs",
                 "De producent heeft zijn prijs flink verhoogd.",
-                "Nieuwe inkoopprijs: €"+
+                "Nieuwe inkoopprijs: €" +
                 buyPrice.toFixed(2)
             );
         },
 
         function(){
 
-            const change=
-                1.03+
-                Math.random()*.12;
+            const change =
+                1.03 +
+                Math.random() * 0.12;
 
-            supplierFactor*=change;
+            supplierFactor *= change;
 
             calculateBuyPrice();
 
@@ -2287,186 +2287,264 @@ function showProducerChoice(){
             showEconomicPopup(
                 "📈 Prijs omhoog",
                 "De producent verhoogt zijn prijs.",
-                "Nieuwe inkoopprijs: €"+
+                "Nieuwe inkoopprijs: €" +
                 buyPrice.toFixed(2)
             );
         },
 
         function(){
 
-            const change=
-                .70+
-                Math.random()*.60;
+            /*
+             * ANDERE PRODUCENT
+             * Altijd duurder dan je huidige producent.
+             * Minimaal +15%, maximaal ongeveer +45%.
+             */
 
-            supplierFactor*=change;
+            const oldPrice = buyPrice;
 
-            supplierFactor=
-                Math.max(.25,supplierFactor);
+            const increase =
+                1.15 +
+                Math.random() * 0.30;
+
+            const newPrice =
+                oldPrice * increase;
+
+            supplierFactor =
+                newPrice /
+                (BASE_PRODUCT_PRICE * (1 + inflation / 100));
+
+            supplierFactor =
+                Math.max(.25, Math.min(10, supplierFactor));
 
             calculateBuyPrice();
 
-            if(change<1){
+            // Extra zekerheid: nooit goedkoper maken.
+            if(buyPrice <= oldPrice){
 
-                log(
-                    "📉 Je hebt een goedkopere producent gevonden."
-                );
+                supplierFactor =
+                    (oldPrice * 1.15) /
+                    (BASE_PRODUCT_PRICE * (1 + inflation / 100));
 
-                showEconomicPopup(
-                    "📉 Goedkopere producent",
-                    "Je hebt een goedkopere producent gevonden.",
-                    "Nieuwe inkoopprijs: €"+
-                    buyPrice.toFixed(2)
-                );
-
-            }else{
-
-                log(
-                    "📈 De nieuwe producent blijkt duurder te zijn."
-                );
-
-                showEconomicPopup(
-                    "📈 Duurdere producent",
-                    "De andere producent blijkt onverwacht duurder te zijn.",
-                    "Nieuwe inkoopprijs: €"+
-                    buyPrice.toFixed(2)
-                );
+                calculateBuyPrice();
             }
+
+            log(
+                "🔎 Andere producent gevonden. " +
+                "Deze producent is duurder."
+            );
+
+            showEconomicPopup(
+                "🔎 Andere producent",
+                "Je hebt een andere producent gevonden, maar deze vraagt een flink hogere prijs.",
+                "Nieuwe inkoopprijs: €" +
+                buyPrice.toFixed(2)
+            );
         }
     ];
 
     document.getElementById("choiceTitle")
-        .textContent="🏭 Producent";
+        .textContent = "🏭 Producent";
 
     document.getElementById("choiceText")
-        .textContent=
-        "De producent zegt: ik wil €"+
-        producerOfferPrice.toFixed(2)+
+        .textContent =
+        "De producent zegt: ik wil €" +
+        producerOfferPrice.toFixed(2) +
         " per product. Wat doe je?";
 
     document.getElementById("choice0")
-        .textContent=
+        .textContent =
         "📈 Grote prijsstijging accepteren";
 
     document.getElementById("choice1")
-        .textContent=
+        .textContent =
         "📈 Kleine prijsstijging accepteren";
 
     document.getElementById("choice2")
-        .textContent=
+        .textContent =
         "🔎 Andere producent zoeken";
 
     document.getElementById("choice3")
-        .textContent=
+        .textContent =
         "🤝 Onderhandelen";
 
     document.getElementById("choice")
-        .style.display="block";
+        .style.display = "block";
 }
+
+
+/* =====================================================
+   ONDERHANDELEN
+===================================================== */
 
 function startNegotiation(){
 
     document.getElementById("choice")
-        .style.display="none";
+        .style.display = "none";
 
     document.getElementById("negotiationText")
-        .textContent=
-        "De producent vraagt €"+
-        producerOfferPrice.toFixed(2)+
+        .textContent =
+        "De producent vraagt €" +
+        producerOfferPrice.toFixed(2) +
         " per product. Welke prijs bied je?";
 
     document.getElementById("negotiationPrice")
-        .value=buyPrice.toFixed(2);
+        .value = buyPrice.toFixed(2);
 
     document.getElementById("negotiationResult")
-        .textContent="";
+        .textContent = "";
 
     document.getElementById("negotiation")
-        .style.display="flex";
+        .style.display = "flex";
 
-    setTimeout(()=>{
+    setTimeout(() => {
         document.getElementById("negotiationPrice").focus();
-    },50);
+    }, 50);
 }
+
 
 function closeNegotiation(){
 
     document.getElementById("negotiation")
-        .style.display="none";
+        .style.display = "none";
 
     document.getElementById("negotiationResult")
-        .textContent="";
+        .textContent = "";
 }
+
+
+/* =====================================================
+   ONDERHANDELING VERSTUREN
+===================================================== */
 
 function submitNegotiation(){
 
-    const proposal=
-        Number(document.getElementById("negotiationPrice").value);
+    const proposal =
+        Number(
+            document.getElementById("negotiationPrice").value
+        );
 
-    if(!Number.isFinite(proposal) || proposal<0.10){
+    if(
+        !Number.isFinite(proposal) ||
+        proposal < 0.10
+    ){
 
         document.getElementById("negotiationResult")
-            .textContent=
+            .textContent =
             "Vul een geldige prijs van minimaal €0,10 in.";
 
         return;
     }
 
-    // Onder de vraagprijs is vaker nee.
-    // Boven de vraagprijs is vaker ja.
-    // De kans op nee blijft bewust niet te groot.
-    const ratio=
-        proposal/producerOfferPrice;
+    /*
+     * De speler mag niet onder zijn huidige inkoopprijs
+     * bieden. Hierdoor kan hij niet een extreem lage
+     * prijs proberen.
+     */
 
-    let yesChance=
-        0.80+(ratio-1)*1.40;
+    if(proposal < buyPrice){
 
-    yesChance=
-        Math.max(.45,Math.min(.98,yesChance));
+        document.getElementById("negotiationResult")
+            .textContent =
+            "❌ Je bod is te laag. De producent neemt zo'n laag bod niet aan.";
 
-    if(Math.random()<yesChance){
+        return;
+    }
 
-        supplierFactor=
-            proposal/
-            (BASE_PRODUCT_PRICE*(1+inflation/100));
 
-        supplierFactor=
-            Math.max(.05,Math.min(10,supplierFactor));
+    /*
+     * KANS OP ACCEPTEREN
+     *
+     * Een bod boven de vraagprijs heeft een grote kans.
+     * Een bod precies rond de vraagprijs heeft een redelijke kans.
+     */
+
+    const ratio =
+        proposal / producerOfferPrice;
+
+    let yesChance =
+        0.55 + (ratio - 1) * 1.50;
+
+    yesChance =
+        Math.max(
+            0.20,
+            Math.min(0.95, yesChance)
+        );
+
+
+    /* =================================================
+       ONDERHANDELING GELUKT
+    ================================================= */
+
+    if(Math.random() < yesChance){
+
+        supplierFactor =
+            proposal /
+            (BASE_PRODUCT_PRICE * (1 + inflation / 100));
+
+        supplierFactor =
+            Math.max(
+                .05,
+                Math.min(10, supplierFactor)
+            );
 
         calculateBuyPrice();
 
         log(
-            "🤝 Onderhandeling gelukt! Producent accepteert €"+
-            buyPrice.toFixed(2)+
+            "🤝 Onderhandeling gelukt! Producent accepteert €" +
+            buyPrice.toFixed(2) +
             " per product."
         );
+
+        /*
+         * BELANGRIJK:
+         * De onderhandeling wordt meteen gesloten.
+         * Je kunt dus niet nog een keer onderhandelen
+         * met dezelfde producent.
+         */
 
         closeNegotiation();
 
         showEconomicPopup(
             "🤝 Deal gesloten!",
             "De producent gaat akkoord met jouw voorstel.",
-            "Nieuwe inkoopprijs: €"+
+            "Nieuwe inkoopprijs: €" +
             buyPrice.toFixed(2)
         );
 
         updateProductPrices();
         updateUI();
 
-    }else{
+    }
 
-        document.getElementById("negotiationResult")
-            .textContent=
-            "❌ De producent zegt nee. Je kunt opnieuw een voorstel doen.";
+
+    /* =================================================
+       ONDERHANDELING MISLUKT
+    ================================================= */
+
+    else{
+
+        /*
+         * GEEN OPNIEUW ONDERHANDELEN
+         *
+         * De onderhandeling wordt afgesloten zodra
+         * de producent nee zegt.
+         */
+
+        closeNegotiation();
 
         log(
-            "❌ Producent weigert je voorstel van €"+
-            proposal.toFixed(2)+
-            ". Probeer opnieuw te onderhandelen."
+            "❌ Producent weigert je voorstel van €" +
+            proposal.toFixed(2) +
+            ". Je kunt met deze producent niet opnieuw onderhandelen."
+        );
+
+        showEconomicPopup(
+            "❌ Onderhandeling mislukt",
+            "De producent weigert je bod. Je krijgt geen tweede kans om te onderhandelen.",
+            "Je moet een andere keuze maken."
         );
     }
 }
-
-
 /* =====================================================
 KEUZE
 ===================================================== */
